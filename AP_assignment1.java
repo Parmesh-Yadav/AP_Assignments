@@ -31,7 +31,7 @@ class Vaccine {
 }
 
 class Hospital {
-    static int noOfHospitals = 0;
+    static int noOfHospitals = 100000;
     String nameOfHosptital;
     int pincode;
     int uniqueID_H;
@@ -44,15 +44,24 @@ class Hospital {
     }
 
     public void printHospitalInfo(Hospital h) {
-        System.out.println("Hospital Name: " + h.nameOfHosptital);
-        System.out.println("Pincode: " + h.pincode);
-        System.out.println("Unique ID: " + h.uniqueID_H);
+        System.out.println(
+                "Hospital Name: " + h.nameOfHosptital + " ,Pincode: " + h.pincode + " ,Unique ID: " + h.uniqueID_H);
     }
 
     public void printSlotDetails(Slot s, Hospital h) {
         System.out.println("Slot added by " + h.uniqueID_H + " for day " + s.dayOfSlot + ",available quantity: "
                 + s.availableQuantity + " of vaccine " + s.VaccineGiven);
     }
+
+    public static int getHospitalByUniqueID(int uid, ArrayList<Hospital> hospitals){
+        for(int i=0;i<hospitals.size();i++){
+            if(hospitals.get(i).uniqueID_H == uid){
+                return i;
+            } 
+        }
+        return -1;
+    }
+
 }
 
 class Citizen {
@@ -76,9 +85,7 @@ class Citizen {
     }
 
     public void printCitizenInfo(Citizen c) {
-        System.out.println("Citizen Name: " + c.nameOfCitizen);
-        System.out.println("Age: " + c.age);
-        System.out.println("Unique ID: " + c.uniqueID_C);
+        System.out.println("Citizen Name: " + c.nameOfCitizen + " ,Age: " + c.age + " ,Unique ID: " + c.uniqueID_C);
     }
 
 }
@@ -104,8 +111,15 @@ public class AP_assignment1 {
                     String nameOfVaccine = s.next();
                     System.out.println("No. of Doses: ");
                     int doses = s.nextInt();
-                    System.out.println("Gap between Doses:");
-                    int gap = s.nextInt();
+                    int gap;
+                    if(doses > 1){
+                        System.out.println("Gap between Doses:");
+                        gap = s.nextInt();
+                        
+                    }
+                    else{
+                        gap = 0;
+                    }
                     Vaccine v = new Vaccine(nameOfVaccine, doses, gap);
                     v.printVaccineInfo(v);
                     vaccines.add(v);
@@ -126,12 +140,18 @@ public class AP_assignment1 {
                     String nameOfCitizen = s.next();
                     System.out.println("Age: ");
                     int age = s.nextInt();
-                    System.out.println("Unique ID: ");
-                    int uniqueID_C = s.nextInt();
-                    Citizen c = new Citizen(nameOfCitizen, age, uniqueID_C);
-                    c.printCitizenInfo(c);
-                    citizens.add(c);
-                    break;
+                    if (age >= 18) {
+                        System.out.println("Unique ID: ");
+                        int uniqueID_C = s.nextInt();
+                        Citizen c = new Citizen(nameOfCitizen, age, uniqueID_C);
+                        c.printCitizenInfo(c);
+                        citizens.add(c);
+                        break;
+                    } else {
+                        System.out.println("Not eligible for vaccination.");
+                        break;
+                    }
+
                 case 4:// Add slot for vaccination
                     System.out.println("Hospital ID: ");
                     int hospitalID = s.nextInt();
@@ -148,8 +168,9 @@ public class AP_assignment1 {
                         }
                         int vaccine = s.nextInt();
                         Slot S = new Slot(dayNumber, vaccines.get(vaccine), quantity);
-                        hospitals.get(hospitalID).slots.add(S);
-                        hospitals.get(hospitalID).printSlotDetails(S, hospitals.get(hospitalID));
+                        int i = Hospital.getHospitalByUniqueID(hospitalID, hospitals);
+                        hospitals.get(i).slots.add(S);
+                        hospitals.get(i).printSlotDetails(S, hospitals.get(hospitalID));
                     }
                     break;
                 case 5:// Book slot for vaccination
@@ -264,4 +285,6 @@ public class AP_assignment1 {
         System.out.println("7. Check Vaccination Status");
         System.out.println("8. Exit");
     }
+
+    
 }
