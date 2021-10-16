@@ -2,6 +2,42 @@ package Assignment_2;
 
 import java.util.Scanner;
 
+interface User{
+
+}
+
+interface LectureMaterial{
+
+}
+
+interface Assessments{
+
+}
+
+class Instructor implements User {
+
+}
+
+class Student implements User{
+
+}
+
+class LectureSlides implements LectureMaterial{
+
+}
+
+class LectureVideos implements LectureMaterial{
+
+}
+
+class Assignments implements Assessments{
+
+}
+
+class Quizzes implements Assessments{
+    
+}
+
 public class AP_assignment2 {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -17,23 +53,23 @@ public class AP_assignment2 {
                         instrMenu();
                         int Ch = s.nextInt();
                         switch (Ch) {
-                            case 1:
+                            case 1:// -->> Add Class Material
                                 break;
-                            case 2:
+                            case 2:// -->> Add Assessments
                                 break;
-                            case 3:
+                            case 3:// -->> View Lecture Materials
                                 break;
-                            case 4:
+                            case 4:// -->> View Assessments
                                 break;
-                            case 5:
+                            case 5:// -->> Grade Assessments
                                 break;
-                            case 6:
+                            case 6:// -->> Close Assessments
                                 break;
-                            case 7:
+                            case 7:// -->> View Comments
                                 break;
-                            case 8:
+                            case 8:// -->> Add comments
                                 break;
-                            case 9:
+                            case 9:// -->> Logout
                                 Choice = 'n';
                                 break;
                         }
@@ -45,19 +81,19 @@ public class AP_assignment2 {
                     instrMenu();
                     int Ch = s.nextInt();
                     switch (Ch) {
-                        case 1:
+                        case 1:// -->> View lecture materials
                             break;
-                        case 2:
+                        case 2:// -->> View assessments
                             break;
-                        case 3:
+                        case 3:// -->> Submit assessments
                             break;
-                        case 4:
+                        case 4:// -->> View grades
                             break;
-                        case 5:
+                        case 5:// -->> View comments
                             break;
-                        case 6:
+                        case 6:// -->> Add comments
                             break;
-                        case 7:
+                        case 7:// -->> Logout
                             CHoice = 'n';
                             break;
                     }
@@ -67,6 +103,7 @@ public class AP_assignment2 {
                     choice = 'n';
                     break;
             }
+        s.close();
         }
         
     }
