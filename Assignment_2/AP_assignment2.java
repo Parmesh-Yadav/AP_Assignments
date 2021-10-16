@@ -1,49 +1,191 @@
 package Assignment_2;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
-interface User{
+interface User {
+    void viewLectureNotes();
 
+    void assessments();
+
+    void viewComments();
+
+    void addComments();
 }
 
-interface LectureMaterial{
+interface LectureMaterial {
+    void addMaterial();
 
+    void viewMaterial();
 }
 
-interface Assessments{
+interface Assessments {
+    void closeAssessment();
+}
 
+interface Submission {
+    void checkStatus();
+
+    void getMarkRecieved();
 }
 
 class Instructor implements User {
+    static int noOfInstr = 0;
+
+    @Override
+    public void viewLectureNotes() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void assessments() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void viewComments() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addComments() {
+        // TODO Auto-generated method stub
+
+    }
 
 }
 
-class Student implements User{
+class Student implements User {
+    static int noOfStd = 0;
+
+    @Override
+    public void viewLectureNotes() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void assessments() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void viewComments() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addComments() {
+        // TODO Auto-generated method stub
+
+    }
 
 }
 
-class LectureSlides implements LectureMaterial{
+class LectureSlides implements LectureMaterial {
+    String sName;
+    ArrayList<String> sContent = new ArrayList<>();
+
+    @Override
+    public void addMaterial() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void viewMaterial() {
+        // TODO Auto-generated method stub
+
+    }
 
 }
 
-class LectureVideos implements LectureMaterial{
+class LectureVideos implements LectureMaterial {
+    String vName; // -->> with extension .mp4
+
+    @Override
+    public void addMaterial() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void viewMaterial() {
+        // TODO Auto-generated method stub
+
+    }
 
 }
 
-class Assignments implements Assessments{
+class Assignments implements Assessments {
+    String pStatement;
+    int maxMarks;
+    char status;
+
+    @Override
+    public void closeAssessment() {
+        // TODO Auto-generated method stub
+
+    }
 
 }
 
-class Quizzes implements Assessments{
-    
+class Quizzes implements Assessments {
+    String question;
+    int maxMarks;// -->> by default 1. {polymorphism}
+    char status;
+
+    @Override
+    public void closeAssessment() {
+        // TODO Auto-generated method stub
+
+    }
+
+}
+
+class Asubmissions implements Submission {
+    String filename; // -->> filename with extension .zip
+
+    @Override
+    public void checkStatus() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getMarkRecieved() {
+        // TODO Auto-generated method stub
+
+    }
+}
+
+class Qsubmission implements Submission {
+    String oneWord; // -->> oneword solution to the question.
+
+    @Override
+    public void checkStatus() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getMarkRecieved() {
+        // TODO Auto-generated method stub
+
+    }
 }
 
 public class AP_assignment2 {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-        //menu driven starts from here
+        // menu driven starts from here
         char choice = 'y';
-        while(choice == 'y'){
+        while (choice == 'y') {
             genInstr();
             int ch = s.nextInt();
             switch (ch) {
@@ -76,36 +218,36 @@ public class AP_assignment2 {
                     }
                     break;
                 case 2: // -->> As STUDENT
-                char CHoice = 'y';
-                while (CHoice == 'y') {
-                    instrMenu();
-                    int Ch = s.nextInt();
-                    switch (Ch) {
-                        case 1:// -->> View lecture materials
-                            break;
-                        case 2:// -->> View assessments
-                            break;
-                        case 3:// -->> Submit assessments
-                            break;
-                        case 4:// -->> View grades
-                            break;
-                        case 5:// -->> View comments
-                            break;
-                        case 6:// -->> Add comments
-                            break;
-                        case 7:// -->> Logout
-                            CHoice = 'n';
-                            break;
+                    char CHoice = 'y';
+                    while (CHoice == 'y') {
+                        instrMenu();
+                        int Ch = s.nextInt();
+                        switch (Ch) {
+                            case 1:// -->> View lecture materials
+                                break;
+                            case 2:// -->> View assessments
+                                break;
+                            case 3:// -->> Submit assessments
+                                break;
+                            case 4:// -->> View grades
+                                break;
+                            case 5:// -->> View comments
+                                break;
+                            case 6:// -->> Add comments
+                                break;
+                            case 7:// -->> Logout
+                                CHoice = 'n';
+                                break;
+                        }
                     }
-                }
                     break;
                 case 3: // -->> Exit
                     choice = 'n';
                     break;
             }
-        s.close();
+            s.close();
         }
-        
+
     }
 
     public static void genInstr() {
@@ -126,6 +268,7 @@ public class AP_assignment2 {
         System.out.println("8. Add Comments");
         System.out.println("9. Logout");
     }
+
     public static void stdMenu() {
         System.out.println("1. View Lecture Materials");
         System.out.println("2. View Assessments");
