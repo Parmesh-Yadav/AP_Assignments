@@ -6,7 +6,7 @@ import java.util.Scanner;
 interface User {
     void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials);
 
-    void assessments();
+    void viewAssessments(ArrayList<Assessments> assessments);
 
     void viewComments();
 
@@ -21,6 +21,8 @@ interface LectureMaterial {
 
 interface Assessments {
     void closeAssessment();
+
+    void viewAssessment();
 }
 
 interface Submission {
@@ -41,7 +43,7 @@ class Instructor implements User {
 
     @Override
     public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
-        for(LectureMaterial lm: lectureMaterials){
+        for (LectureMaterial lm : lectureMaterials) {
             lm.viewMaterial();
             System.out.println();
         }
@@ -49,8 +51,12 @@ class Instructor implements User {
     }
 
     @Override
-    public void assessments() {
-        // TODO Auto-generated method stub
+    public void viewAssessments(ArrayList<Assessments> assessments) {
+        for (int i = 0; i < assessments.size(); i++) {
+            System.out.print("ID: " + (i + 1) + " ");
+            assessments.get(i).viewAssessment();
+            System.out.println("--------------------");
+        }
 
     }
 
@@ -86,7 +92,7 @@ class Student implements User {
 
     @Override
     public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
-        for(LectureMaterial lm: lectureMaterials){
+        for (LectureMaterial lm : lectureMaterials) {
             lm.viewMaterial();
             System.out.println();
         }
@@ -94,8 +100,12 @@ class Student implements User {
     }
 
     @Override
-    public void assessments() {
-        // TODO Auto-generated method stub
+    public void viewAssessments(ArrayList<Assessments> assessments) {
+        for (int i = 0; i < assessments.size(); i++) {
+            System.out.print("ID: " + (i + 1) + " ");
+            assessments.get(i).viewAssessment();
+            System.out.println("--------------------");
+        }
 
     }
 
@@ -146,25 +156,25 @@ class LectureSlides implements LectureMaterial {
 
     @Override
     public void viewMaterial() {
-        System.out.println("Title: "+this.sName);
-        for(int i=0;i<this.sContent.size();i++){
-            System.out.println("Slide "+(i+1)+": "+this.sContent.get(i));
+        System.out.println("Title: " + this.sName);
+        for (int i = 0; i < this.sContent.size(); i++) {
+            System.out.println("Slide " + (i + 1) + ": " + this.sContent.get(i));
         }
-        System.out.println("Number of slides: "+this.noOfSlides);
-        //date time here
-        System.out.println("Uploaded by: "+this.I.instrName);
+        System.out.println("Number of slides: " + this.noOfSlides);
+        // date time here
+        System.out.println("Uploaded by: " + this.I.instrName);
 
     }
 
 }
 
 class LectureVideos implements LectureMaterial {
-    String vName; 
+    String vName;
     String fileName;// -->> with extension .mp4
     Instructor I;
-    //date time left
+    // date time left
 
-    public LectureVideos(String vName,String fileName,Instructor I){
+    public LectureVideos(String vName, String fileName, Instructor I) {
         this.vName = vName;
         this.fileName = fileName;
         this.I = I;
@@ -178,10 +188,10 @@ class LectureVideos implements LectureMaterial {
 
     @Override
     public void viewMaterial() {
-        System.out.println("Title of video: "+this.vName);
-        System.out.println("Video File: "+this.fileName);
-        //date time here
-        System.out.println("Uploaded by: "+this.I.instrName);
+        System.out.println("Title of video: " + this.vName);
+        System.out.println("Video File: " + this.fileName);
+        // date time here
+        System.out.println("Uploaded by: " + this.I.instrName);
 
     }
 
@@ -193,7 +203,7 @@ class Assignments implements Assessments {
     char status;
     Instructor I;
 
-    public Assignments(String pStatement,int maxMarks,Instructor I){
+    public Assignments(String pStatement, int maxMarks, Instructor I) {
         this.pStatement = pStatement;
         this.maxMarks = maxMarks;
         this.status = 'O';
@@ -206,6 +216,12 @@ class Assignments implements Assessments {
 
     }
 
+    @Override
+    public void viewAssessment() {
+        System.out.println("Assignment: " + this.pStatement + " Max Marks: " + this.maxMarks);
+
+    }
+
 }
 
 class Quizzes implements Assessments {
@@ -214,14 +230,14 @@ class Quizzes implements Assessments {
     char status;
     Instructor I;
 
-    public Quizzes(String question,int maxMarks,Instructor I){
+    public Quizzes(String question, int maxMarks, Instructor I) {
         this.question = question;
         this.maxMarks = maxMarks;
         this.status = 'O';
         this.I = I;
     }
 
-    public Quizzes(String question,Instructor I){
+    public Quizzes(String question, Instructor I) {
         this.question = question;
         this.maxMarks = 1;
         this.status = 'O';
@@ -231,6 +247,12 @@ class Quizzes implements Assessments {
     @Override
     public void closeAssessment() {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void viewAssessment() {
+        System.out.println("Question: " + this.question);
 
     }
 
@@ -293,29 +315,34 @@ public class AP_assignment2 {
         char choice = 'y';
         while (choice == 'y') {
             genInstr();
-            int ch = s.nextInt(); s.nextLine();
+            int ch = s.nextInt();
+            s.nextLine();
             switch (ch) {
                 case 1: // -->> As INSTRUCTOR
                     Instructor.printInstructors(instructors);
                     System.out.println("Choose ID");
-                    int ID = s.nextInt(); s.nextLine();
-                    
+                    int ID = s.nextInt();
+                    s.nextLine();
+
                     // Instructor I;
                     char Choice = 'y';
                     while (Choice == 'y') {
                         System.out.println("Welcome " + instructors.get(ID).instrName);
                         instrMenu();
-                        int Ch = s.nextInt(); s.nextLine();
+                        int Ch = s.nextInt();
+                        s.nextLine();
                         switch (Ch) {
                             case 1:// -->> Add Class Material
                                 clsMatChoice();
-                                int cH = s.nextInt(); s.nextLine();
+                                int cH = s.nextInt();
+                                s.nextLine();
                                 switch (cH) {
                                     case 1:// -->> Add Lecture Slides
                                         System.out.println("Enter Topic of Slides:");
                                         String stopic = s.nextLine();
                                         System.out.println("Enter number of slides: ");
-                                        int nos = s.nextInt(); s.nextLine();
+                                        int nos = s.nextInt();
+                                        s.nextLine();
                                         lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID)));
                                         break;
                                     case 2:// -->> Add Lecture Videos
@@ -329,24 +356,26 @@ public class AP_assignment2 {
                                 break;
                             case 2:// -->> Add Assessments
                                 assChoice();
-                                int CH = s.nextInt(); s.nextLine();
+                                int CH = s.nextInt();
+                                s.nextLine();
                                 switch (CH) {
                                     case 1:// -->> Add Assignment
                                         System.out.println("Enter Problem Statement: ");
                                         String ps = s.nextLine();
                                         System.out.println("Enter Max Marks: ");
-                                        int mm = s.nextInt(); s.nextLine();
+                                        int mm = s.nextInt();
+                                        s.nextLine();
                                         assessments.add(new Assignments(ps, mm, instructors.get(ID)));
                                         break;
                                     case 2:// -->> Add Quiz
                                         System.out.println("Enter Quiz Question: ");
                                         String qq = s.nextLine();
                                         System.out.println("Enter Max Marks");
-                                        int mM = s.nextInt(); s.nextLine();
-                                        if(mM != 1){
-                                            assessments.add(new Quizzes(qq, mM , instructors.get(ID)));
-                                        }
-                                        else{
+                                        int mM = s.nextInt();
+                                        s.nextLine();
+                                        if (mM != 1) {
+                                            assessments.add(new Quizzes(qq, mM, instructors.get(ID)));
+                                        } else {
                                             assessments.add(new Quizzes(qq, instructors.get(ID)));
                                         }
                                         break;
@@ -356,6 +385,7 @@ public class AP_assignment2 {
                                 instructors.get(ID).viewLectureNotes(lectureMaterials);
                                 break;
                             case 4:// -->> View Assessments
+                                instructors.get(ID).viewAssessments(assessments);
                                 break;
                             case 5:// -->> Grade Assessments
                                 break;
@@ -374,17 +404,20 @@ public class AP_assignment2 {
                 case 2: // -->> As STUDENT
                     Student.printStudents(students);
                     System.out.println("Choose ID");
-                    int Id = s.nextInt(); s.nextLine();
+                    int Id = s.nextInt();
+                    s.nextLine();
                     char CHoice = 'y';
                     while (CHoice == 'y') {
                         System.out.println("Welcome " + students.get(Id).stdName);
                         stdMenu();
-                        int Ch = s.nextInt(); s.nextLine();
+                        int Ch = s.nextInt();
+                        s.nextLine();
                         switch (Ch) {
                             case 1:// -->> View lecture materials
                                 students.get(Id).viewLectureNotes(lectureMaterials);
                                 break;
                             case 2:// -->> View assessments
+                                students.get(Id).viewAssessments(assessments);
                                 break;
                             case 3:// -->> Submit assessments
                                 break;
