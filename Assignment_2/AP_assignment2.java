@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 interface User {
-    void viewLectureNotes();
+    void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials);
 
     void assessments();
 
@@ -40,8 +40,11 @@ class Instructor implements User {
     }
 
     @Override
-    public void viewLectureNotes() {
-        // TODO Auto-generated method stub
+    public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
+        for(LectureMaterial lm: lectureMaterials){
+            lm.viewMaterial();
+            System.out.println();
+        }
 
     }
 
@@ -82,8 +85,11 @@ class Student implements User {
     }
 
     @Override
-    public void viewLectureNotes() {
-        // TODO Auto-generated method stub
+    public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
+        for(LectureMaterial lm: lectureMaterials){
+            lm.viewMaterial();
+            System.out.println();
+        }
 
     }
 
@@ -299,10 +305,7 @@ public class AP_assignment2 {
                             case 2:// -->> Add Assessments
                                 break;
                             case 3:// -->> View Lecture Materials
-                                for(LectureMaterial lm: lectureMaterials){
-                                    lm.viewMaterial();
-                                    System.out.println();
-                                }
+                                instructors.get(ID).viewLectureNotes(lectureMaterials);
                                 break;
                             case 4:// -->> View Assessments
                                 break;
@@ -331,10 +334,7 @@ public class AP_assignment2 {
                         int Ch = s.nextInt(); s.nextLine();
                         switch (Ch) {
                             case 1:// -->> View lecture materials
-                                for(LectureMaterial lm: lectureMaterials){
-                                    lm.viewMaterial();
-                                    System.out.println();
-                                }
+                                students.get(Id).viewLectureNotes(lectureMaterials);
                                 break;
                             case 2:// -->> View assessments
                                 break;
