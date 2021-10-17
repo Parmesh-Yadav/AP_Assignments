@@ -105,9 +105,9 @@ class Student implements User {
 
     }
 
-    public static void printInstructors(ArrayList<Instructor> instructors) {
-        for (int i = 0; i < instructors.size(); i++) {
-            System.out.println(instructors.get(i).instrID + ". " + instructors.get(i).instrName);
+    public static void printStudents(ArrayList<Student> students) {
+        for (int i = 0; i < students.size(); i++) {
+            System.out.println(students.get(i).stdID + ". " + students.get(i).stdName);
         }
     }
 
@@ -140,7 +140,13 @@ class LectureSlides implements LectureMaterial {
 
     @Override
     public void viewMaterial() {
-        // TODO Auto-generated method stub
+        System.out.println("Title: "+this.sName);
+        for(int i=0;i<this.sContent.size();i++){
+            System.out.println("Slide "+(i+1)+": "+this.sContent.get(i));
+        }
+        System.out.println("Number of slides: "+this.noOfSlides);
+        //date time here
+        System.out.println("Uploaded by: "+this.I.instrName);
 
     }
 
@@ -166,7 +172,10 @@ class LectureVideos implements LectureMaterial {
 
     @Override
     public void viewMaterial() {
-        // TODO Auto-generated method stub
+        System.out.println("Title of video: "+this.vName);
+        System.out.println("Video File: "+this.fileName);
+        //date time here
+        System.out.println("Uploaded by: "+this.I.instrName);
 
     }
 
@@ -290,6 +299,10 @@ public class AP_assignment2 {
                             case 2:// -->> Add Assessments
                                 break;
                             case 3:// -->> View Lecture Materials
+                                for(LectureMaterial lm: lectureMaterials){
+                                    lm.viewMaterial();
+                                    System.out.println();
+                                }
                                 break;
                             case 4:// -->> View Assessments
                                 break;
@@ -308,12 +321,20 @@ public class AP_assignment2 {
                     }
                     break;
                 case 2: // -->> As STUDENT
+                    Student.printStudents(students);
+                    System.out.println("Choose ID");
+                    int Id = s.nextInt(); s.nextLine();
                     char CHoice = 'y';
                     while (CHoice == 'y') {
-                        instrMenu();
+                        System.out.println("Welcome " + students.get(Id).stdName);
+                        stdMenu();
                         int Ch = s.nextInt(); s.nextLine();
                         switch (Ch) {
                             case 1:// -->> View lecture materials
+                                for(LectureMaterial lm: lectureMaterials){
+                                    lm.viewMaterial();
+                                    System.out.println();
+                                }
                                 break;
                             case 2:// -->> View assessments
                                 break;
