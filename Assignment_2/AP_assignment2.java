@@ -31,6 +31,13 @@ interface Submission {
 
 class Instructor implements User {
     static int noOfInstr = 0;
+    int instrID;
+    String instrName;
+
+    public Instructor(String instrName) {
+        this.instrName = instrName;
+        this.instrID = noOfInstr++;
+    }
 
     @Override
     public void viewLectureNotes() {
@@ -54,12 +61,25 @@ class Instructor implements User {
     public void addComments() {
         // TODO Auto-generated method stub
 
+    }
+
+    public static void printInstructors(ArrayList<Instructor> instructors) {
+        for (int i = 0; i < instructors.size(); i++) {
+            System.out.println(instructors.get(i).instrID + ". " + instructors.get(i).instrName);
+        }
     }
 
 }
 
 class Student implements User {
     static int noOfStd = 0;
+    int stdID;
+    String stdName;
+
+    public Student(String stdName) {
+        this.stdName = stdName;
+        this.stdID = noOfStd++;
+    }
 
     @Override
     public void viewLectureNotes() {
@@ -85,11 +105,32 @@ class Student implements User {
 
     }
 
+    public static void printInstructors(ArrayList<Instructor> instructors) {
+        for (int i = 0; i < instructors.size(); i++) {
+            System.out.println(instructors.get(i).instrID + ". " + instructors.get(i).instrName);
+        }
+    }
+
 }
 
 class LectureSlides implements LectureMaterial {
     String sName;
+    int noOfSlides;
     ArrayList<String> sContent = new ArrayList<>();
+    Instructor I;
+    // date time left
+
+    public LectureSlides(String sName, int noOfSlides, Instructor I) {
+        this.sName = sName;
+        this.noOfSlides = noOfSlides;
+        this.I = I;
+        Scanner s = new Scanner(System.in);
+        for (int i = 0; i < noOfSlides; i++) {
+            System.out.println("Content of slide " + (i + 1));
+            String content = s.nextLine();
+            this.sContent.add(content);
+        }
+    }
 
     @Override
     public void addMaterial() {
@@ -106,7 +147,16 @@ class LectureSlides implements LectureMaterial {
 }
 
 class LectureVideos implements LectureMaterial {
-    String vName; // -->> with extension .mp4
+    String vName; 
+    String fileName;// -->> with extension .mp4
+    Instructor I;
+    //date time left
+
+    public LectureVideos(String vName,String fileName,Instructor I){
+        this.vName = vName;
+        this.fileName = fileName;
+        this.I = I;
+    }
 
     @Override
     public void addMaterial() {
@@ -183,19 +233,59 @@ class Qsubmission implements Submission {
 public class AP_assignment2 {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
+        // dummy instructors
+        Instructor I0 = new Instructor("I0");
+        Instructor I1 = new Instructor("I1");
+        ArrayList<Instructor> instructors = new ArrayList<>();
+        instructors.add(I0);
+        instructors.add(I1);
+        // dummy students
+        Student S0 = new Student("S0");
+        Student S1 = new Student("S1");
+        Student S2 = new Student("S2");
+        ArrayList<Student> students = new ArrayList<>();
+        students.add(S0);
+        students.add(S1);
+        students.add(S2);
+        // ds for lecture materials
+        ArrayList<LectureMaterial> lectureMaterials = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
         while (choice == 'y') {
             genInstr();
-            int ch = s.nextInt();
+            int ch = s.nextInt(); s.nextLine();
             switch (ch) {
                 case 1: // -->> As INSTRUCTOR
+                    Instructor.printInstructors(instructors);
+                    System.out.println("Choose ID");
+                    int ID = s.nextInt(); s.nextLine();
+                    
+                    // Instructor I;
                     char Choice = 'y';
                     while (Choice == 'y') {
+                        System.out.println("Welcome " + instructors.get(ID).instrName);
                         instrMenu();
-                        int Ch = s.nextInt();
+                        int Ch = s.nextInt(); s.nextLine();
                         switch (Ch) {
                             case 1:// -->> Add Class Material
+                                clsMatChoice();
+                                int cH = s.nextInt(); s.nextLine();
+                                switch (cH) {
+                                    case 1:
+                                        System.out.println("Enter Topic of Slides:");
+                                        String stopic = s.nextLine();
+                                        System.out.println("Enter number of slides: ");
+                                        int nos = s.nextInt(); s.nextLine();
+                                        lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID)));
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter Topic of Video: ");
+                                        String vtopic = s.nextLine();
+                                        System.out.println("Enter Filename of Video: ");
+                                        String vFilename = s.nextLine();
+                                        lectureMaterials.add(new LectureVideos(vtopic, vFilename, instructors.get(ID)));
+                                        break;
+                                }
                                 break;
                             case 2:// -->> Add Assessments
                                 break;
@@ -221,7 +311,7 @@ public class AP_assignment2 {
                     char CHoice = 'y';
                     while (CHoice == 'y') {
                         instrMenu();
-                        int Ch = s.nextInt();
+                        int Ch = s.nextInt(); s.nextLine();
                         switch (Ch) {
                             case 1:// -->> View lecture materials
                                 break;
@@ -245,7 +335,6 @@ public class AP_assignment2 {
                     choice = 'n';
                     break;
             }
-            s.close();
         }
 
     }
@@ -253,7 +342,7 @@ public class AP_assignment2 {
     public static void genInstr() {
         System.out.println("Welcome to BackPack");
         System.out.println("1. Enter as Instructor");
-        System.out.println("1. Enter as Student");
+        System.out.println("2. Enter as Student");
         System.out.println("3. Exit");
     }
 
@@ -277,5 +366,10 @@ public class AP_assignment2 {
         System.out.println("5. View Comments");
         System.out.println("6. Add Comments");
         System.out.println("7. Logout");
+    }
+
+    public static void clsMatChoice() {
+        System.out.println("1. Add Lecture Slide");
+        System.out.println("2. Add Lecture Video");
     }
 }
