@@ -191,6 +191,14 @@ class Assignments implements Assessments {
     String pStatement;
     int maxMarks;
     char status;
+    Instructor I;
+
+    public Assignments(String pStatement,int maxMarks,Instructor I){
+        this.pStatement = pStatement;
+        this.maxMarks = maxMarks;
+        this.status = 'O';
+        this.I = I;
+    }
 
     @Override
     public void closeAssessment() {
@@ -202,8 +210,23 @@ class Assignments implements Assessments {
 
 class Quizzes implements Assessments {
     String question;
-    int maxMarks;// -->> by default 1. {polymorphism}
+    int maxMarks;// -->> by default 1. {polymorphism} {method overloading}
     char status;
+    Instructor I;
+
+    public Quizzes(String question,int maxMarks,Instructor I){
+        this.question = question;
+        this.maxMarks = maxMarks;
+        this.status = 'O';
+        this.I = I;
+    }
+
+    public Quizzes(String question,Instructor I){
+        this.question = question;
+        this.maxMarks = 1;
+        this.status = 'O';
+        this.I = I;
+    }
 
     @Override
     public void closeAssessment() {
@@ -264,6 +287,8 @@ public class AP_assignment2 {
         students.add(S2);
         // ds for lecture materials
         ArrayList<LectureMaterial> lectureMaterials = new ArrayList<>();
+        // ds for assessments
+        ArrayList<Assessments> assessments = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
         while (choice == 'y') {
@@ -286,14 +311,14 @@ public class AP_assignment2 {
                                 clsMatChoice();
                                 int cH = s.nextInt(); s.nextLine();
                                 switch (cH) {
-                                    case 1:
+                                    case 1:// -->> Add Lecture Slides
                                         System.out.println("Enter Topic of Slides:");
                                         String stopic = s.nextLine();
                                         System.out.println("Enter number of slides: ");
                                         int nos = s.nextInt(); s.nextLine();
                                         lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID)));
                                         break;
-                                    case 2:
+                                    case 2:// -->> Add Lecture Videos
                                         System.out.println("Enter Topic of Video: ");
                                         String vtopic = s.nextLine();
                                         System.out.println("Enter Filename of Video: ");
@@ -303,6 +328,29 @@ public class AP_assignment2 {
                                 }
                                 break;
                             case 2:// -->> Add Assessments
+                                assChoice();
+                                int CH = s.nextInt(); s.nextLine();
+                                switch (CH) {
+                                    case 1:// -->> Add Assignment
+                                        System.out.println("Enter Problem Statement: ");
+                                        String ps = s.nextLine();
+                                        System.out.println("Enter Max Marks: ");
+                                        int mm = s.nextInt(); s.nextLine();
+                                        assessments.add(new Assignments(ps, mm, instructors.get(ID)));
+                                        break;
+                                    case 2:// -->> Add Quiz
+                                        System.out.println("Enter Quiz Question: ");
+                                        String qq = s.nextLine();
+                                        System.out.println("Enter Max Marks");
+                                        int mM = s.nextInt(); s.nextLine();
+                                        if(mM != 1){
+                                            assessments.add(new Quizzes(qq, mM , instructors.get(ID)));
+                                        }
+                                        else{
+                                            assessments.add(new Quizzes(qq, instructors.get(ID)));
+                                        }
+                                        break;
+                                }
                                 break;
                             case 3:// -->> View Lecture Materials
                                 instructors.get(ID).viewLectureNotes(lectureMaterials);
@@ -392,5 +440,10 @@ public class AP_assignment2 {
     public static void clsMatChoice() {
         System.out.println("1. Add Lecture Slide");
         System.out.println("2. Add Lecture Video");
+    }
+
+    public static void assChoice() {
+        System.out.println("1. Add Assignment");
+        System.out.println("2. Add Quiz");
     }
 }
