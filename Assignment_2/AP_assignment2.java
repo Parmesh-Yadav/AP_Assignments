@@ -27,6 +27,8 @@ interface Assessments {
 
     boolean checkStd(String stdName);
 
+    void doAssessment(Student S);
+
 }
 
 interface Submission {
@@ -144,7 +146,8 @@ class Student implements User {
         }
     }
 
-    public void submitAssessment(ArrayList<Assessments> oAssessments, Assignments A, Quizzes Q) {
+    public boolean submitAssessment(ArrayList<Assessments> oAssessments, Assignments A, Quizzes Q) {
+        boolean check = false;
         System.out.println("List of open & pending assignments -->>");
         for (int i = 0; i < oAssessments.size(); i++) {
             if (oAssessments.get(i).getClass().equals(A.getClass())) {
@@ -152,15 +155,18 @@ class Student implements User {
                     System.out.print("ID: " + (i) + " ");
                     oAssessments.get(i).viewAssessment();
                     System.out.println("--------------------");
+                    check = true;
                 }
             } else if (oAssessments.get(i).getClass().equals(Q.getClass())) {
                 if (!oAssessments.get(i).checkStd(this.stdName)) {
                     System.out.print("ID: " + (i) + " ");
                     oAssessments.get(i).viewAssessment();
                     System.out.println("--------------------");
+                    check = true;
                 }
             }
         }
+        return check;
     }
 
 }
@@ -273,6 +279,16 @@ class Assignments implements Assessments {
         return false;
     }
 
+    @Override
+    public void doAssessment(Student S) {
+        Scanner s = new Scanner(System.in);
+        System.out.println(this.pStatement);
+        String ans = s.nextLine(); //-->> check if its in .zip format only
+        stdAssDone.add(S);
+        stdWrkDone.add(new Asubmissions(ans));
+        
+    }
+
 }
 
 class Quizzes implements Assessments {
@@ -283,7 +299,7 @@ class Quizzes implements Assessments {
     Instructor cI;
     Instructor gI;
     ArrayList<Student> stdQuizDone = new ArrayList<>();
-    ArrayList<Asubmissions> stdWrkDone = new ArrayList<>();
+    ArrayList<Qsubmission> stdWrkDone = new ArrayList<>();
     // final static char type = 'Q';
 
     public Quizzes(String question, int maxMarks, Instructor aI) {
@@ -321,6 +337,16 @@ class Quizzes implements Assessments {
             }
         }
         return false;
+    }
+
+    @Override
+    public void doAssessment(Student S) {
+        Scanner s = new Scanner(System.in);
+        System.out.println(this.question);
+        String ans = s.next(); //-->> One Word Answer
+        stdQuizDone.add(S);
+        stdWrkDone.add(new Qsubmission(ans));
+        
     }
 
 }
@@ -499,7 +525,16 @@ public class AP_assignment2 {
                                 students.get(Id).viewAssessments(oAssessments);
                                 break;
                             case 3:// -->> Submit assessments
-                                students.get(Id).submitAssessment(oAssessments,A,Q);
+                                boolean check = students.get(Id).submitAssessment(oAssessments,A,Q);
+                                if(check == true){
+                                    System.out.println("Enter ID of assessment: ");
+                                    int aid = s.nextInt(); s.nextLine();
+                                    oAssessments.get(aid).doAssessment(students.get(Id));
+                                }
+                                else{
+                                    System.out.println("No open assignments are pending for student "+students.get(Id).stdName);
+                                }
+                                
                                 break;
                             case 4:// -->> View grades
                                 break;
