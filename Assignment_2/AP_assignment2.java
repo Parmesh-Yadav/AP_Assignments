@@ -20,9 +20,13 @@ interface LectureMaterial {
 }
 
 interface Assessments {
+    // char type = 'A';
     void closeAssessment(Instructor cI);
 
     void viewAssessment();
+
+    boolean checkStd(String stdName);
+
 }
 
 interface Submission {
@@ -140,6 +144,25 @@ class Student implements User {
         }
     }
 
+    public void submitAssessment(ArrayList<Assessments> oAssessments, Assignments A, Quizzes Q) {
+        System.out.println("List of open & pending assignments -->>");
+        for (int i = 0; i < oAssessments.size(); i++) {
+            if (oAssessments.get(i).getClass().equals(A.getClass())) {
+                if (!oAssessments.get(i).checkStd(this.stdName)) {
+                    System.out.print("ID: " + (i) + " ");
+                    oAssessments.get(i).viewAssessment();
+                    System.out.println("--------------------");
+                }
+            } else if (oAssessments.get(i).getClass().equals(Q.getClass())) {
+                if (!oAssessments.get(i).checkStd(this.stdName)) {
+                    System.out.print("ID: " + (i) + " ");
+                    oAssessments.get(i).viewAssessment();
+                    System.out.println("--------------------");
+                }
+            }
+        }
+    }
+
 }
 
 class LectureSlides implements LectureMaterial {
@@ -217,6 +240,9 @@ class Assignments implements Assessments {
     Instructor aI;
     Instructor cI;
     Instructor gI;
+    ArrayList<Student> stdAssDone = new ArrayList<>();
+    ArrayList<Asubmissions> stdWrkDone = new ArrayList<>();
+    // final static char type = 'A';
 
     public Assignments(String pStatement, int maxMarks, Instructor aI) {
         this.pStatement = pStatement;
@@ -237,6 +263,16 @@ class Assignments implements Assessments {
 
     }
 
+    @Override
+    public boolean checkStd(String stdName) {
+        for (Student S : this.stdAssDone) {
+            if (S.stdName == stdName) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 class Quizzes implements Assessments {
@@ -246,6 +282,9 @@ class Quizzes implements Assessments {
     Instructor aI;
     Instructor cI;
     Instructor gI;
+    ArrayList<Student> stdQuizDone = new ArrayList<>();
+    ArrayList<Asubmissions> stdWrkDone = new ArrayList<>();
+    // final static char type = 'Q';
 
     public Quizzes(String question, int maxMarks, Instructor aI) {
         this.question = question;
@@ -274,10 +313,24 @@ class Quizzes implements Assessments {
 
     }
 
+    @Override
+    public boolean checkStd(String stdName) {
+        for (Student S : this.stdQuizDone) {
+            if (S.stdName == stdName) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 class Asubmissions implements Submission {
     String filename; // -->> filename with extension .zip
+
+    public Asubmissions(String filename) {
+        this.filename = filename;
+    }
 
     @Override
     public void checkStatus() {
@@ -294,6 +347,10 @@ class Asubmissions implements Submission {
 
 class Qsubmission implements Submission {
     String oneWord; // -->> oneword solution to the question.
+
+    public Qsubmission(String oneWord) {
+        this.oneWord = oneWord;
+    }
 
     @Override
     public void checkStatus() {
@@ -330,6 +387,10 @@ public class AP_assignment2 {
         // ds for assessments
         ArrayList<Assessments> oAssessments = new ArrayList<>();
         ArrayList<Assessments> cAssessments = new ArrayList<>();
+        Assignments A = new Assignments("Dummt", 0, new Instructor("Dummy"));
+        Quizzes Q = new Quizzes("Dummy", 0, new Instructor("Dummy"));
+        // ArrayList<Assignments> oAssignments = new ArrayList<>();
+        // ArrayList<Quizzes> oQuizzes = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
         while (choice == 'y') {
@@ -342,8 +403,6 @@ public class AP_assignment2 {
                     System.out.println("Choose ID");
                     int ID = s.nextInt();
                     s.nextLine();
-
-                    // Instructor I;
                     char Choice = 'y';
                     while (Choice == 'y') {
                         System.out.println("Welcome " + instructors.get(ID).instrName);
@@ -440,6 +499,7 @@ public class AP_assignment2 {
                                 students.get(Id).viewAssessments(oAssessments);
                                 break;
                             case 3:// -->> Submit assessments
+                                students.get(Id).submitAssessment(oAssessments,A,Q);
                                 break;
                             case 4:// -->> View grades
                                 break;
