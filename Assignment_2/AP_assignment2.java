@@ -37,6 +37,7 @@ interface Submission {
     void checkStatus();
 
     void getMarkRecieved();
+    void printGrSub();
 }
 
 class Instructor implements User {
@@ -105,6 +106,7 @@ class Student implements User {
     static int noOfStd = 0;
     int stdID;
     String stdName;
+    ArrayList<Submission> submissions;
 
     public Student(String stdName) {
         this.stdName = stdName;
@@ -169,6 +171,13 @@ class Student implements User {
             }
         }
         return check;
+    }
+
+    public void printGrSubs() {
+        for(int i=0;i<this.submissions.size();i++){
+            this.submissions.get(i).printGrSub();
+            System.out.println();
+        }
     }
 
 }
@@ -247,7 +256,7 @@ class Assignments implements Assessments {
     char status;
     Instructor aI;
     Instructor cI;
-    Instructor gI;
+    // Instructor gI;
     ArrayList<Student> stdAssDone = new ArrayList<>();
     ArrayList<Asubmissions> stdWrkDone = new ArrayList<>();
     // final static char type = 'A';
@@ -294,7 +303,7 @@ class Assignments implements Assessments {
     @Override
     public void gradeSubs(Instructor instructor) {
         Scanner s = new Scanner(System.in);
-        this.gI = instructor;
+        // this.gI = instructor;
         for(int i=0;i<this.stdAssDone.size();i++){
             if(this.stdWrkDone.get(i).status.equals("ungraded"));{
                 System.out.println(" "+(i)+this.stdAssDone.get(i).stdName);
@@ -313,7 +322,9 @@ class Assignments implements Assessments {
         }
         else{
             this.stdWrkDone.get(id).marksRecieved = mr;
-            this.stdWrkDone.get(id).status = "graded"; 
+            this.stdWrkDone.get(id).status = "graded";
+            this.stdWrkDone.get(id).gI = instructor;
+            this.stdAssDone.get(id).submissions.add(this.stdWrkDone.get(id)); 
         }
         
     }
@@ -326,7 +337,7 @@ class Quizzes implements Assessments {
     char status;
     Instructor aI;
     Instructor cI;
-    Instructor gI;
+    // Instructor gI;
     ArrayList<Student> stdQuizDone = new ArrayList<>();
     ArrayList<Qsubmission> stdWrkDone = new ArrayList<>();
     // final static char type = 'Q';
@@ -381,7 +392,7 @@ class Quizzes implements Assessments {
     @Override
     public void gradeSubs(Instructor instructor) {
         Scanner s = new Scanner(System.in);
-        this.gI = instructor;
+        // this.gI = instructor;
         for(int i=0;i<this.stdQuizDone.size();i++){
             if(this.stdWrkDone.get(i).status.equals("ungraded"));{
                 System.out.println(" "+(i)+this.stdQuizDone.get(i).stdName);
@@ -400,7 +411,9 @@ class Quizzes implements Assessments {
         }
         else{
             this.stdWrkDone.get(id).marksRecieved = mr;
-            this.stdWrkDone.get(id).status = "graded"; 
+            this.stdWrkDone.get(id).status = "graded";
+            this.stdWrkDone.get(id).gI = instructor;
+            this.stdQuizDone.get(id).submissions.add(this.stdWrkDone.get(id)); 
         }
         
     }
@@ -411,6 +424,7 @@ class Asubmissions implements Submission {
     String filename; // -->> filename with extension .zip
     String status;
     int marksRecieved;
+    Instructor gI;
 
     public Asubmissions(String filename) {
         this.filename = filename;
@@ -428,12 +442,21 @@ class Asubmissions implements Submission {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void printGrSub() {
+        System.out.println("Submission: "+this.filename);
+        System.out.println("Marks Scored: "+ this.marksRecieved);
+        System.out.println("Graded by: "+this.gI.instrName);
+        
+    }
 }
 
 class Qsubmission implements Submission {
     String oneWord; // -->> oneword solution to the question.
     String status;
     int marksRecieved;
+    Instructor gI;
 
     public Qsubmission(String oneWord) {
         this.oneWord = oneWord;
@@ -450,6 +473,14 @@ class Qsubmission implements Submission {
     public void getMarkRecieved() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void printGrSub() {
+        System.out.println("Submission: "+this.oneWord);
+        System.out.println("Marks Scored: "+ this.marksRecieved);
+        System.out.println("Graded by: "+this.gI.instrName);
+        
     }
 }
 
@@ -610,6 +641,8 @@ public class AP_assignment2 {
                                 
                                 break;
                             case 4:// -->> View grades
+                                System.out.println("Graded Submissions: ");
+                                students.get(Id).printGrSubs();
                                 break;
                             case 5:// -->> View comments
                                 break;
