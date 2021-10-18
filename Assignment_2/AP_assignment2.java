@@ -20,7 +20,7 @@ interface LectureMaterial {
 }
 
 interface Assessments {
-    void closeAssessment();
+    void closeAssessment(Instructor cI);
 
     void viewAssessment();
 }
@@ -53,10 +53,23 @@ class Instructor implements User {
     @Override
     public void viewAssessments(ArrayList<Assessments> assessments) {
         for (int i = 0; i < assessments.size(); i++) {
-            System.out.print("ID: " + (i + 1) + " ");
+            System.out.print("ID: " + (i) + " ");
             assessments.get(i).viewAssessment();
             System.out.println("--------------------");
         }
+
+    }
+
+    public void closeAssessments(ArrayList<Assessments> oAssessments, ArrayList<Assessments> cAssessments,
+            Instructor cI) {
+        Scanner s = new Scanner(System.in);
+        System.out.println("List of Open Assessments: ");
+        viewAssessments(oAssessments);
+        System.out.println("Enter ID of Assignment to close: ");
+        int ID = s.nextInt();
+        oAssessments.get(ID).closeAssessment(cI);
+        cAssessments.add(oAssessments.get(ID));
+        oAssessments.remove(ID);
 
     }
 
@@ -102,7 +115,7 @@ class Student implements User {
     @Override
     public void viewAssessments(ArrayList<Assessments> assessments) {
         for (int i = 0; i < assessments.size(); i++) {
-            System.out.print("ID: " + (i + 1) + " ");
+            System.out.print("ID: " + (i) + " ");
             assessments.get(i).viewAssessment();
             System.out.println("--------------------");
         }
@@ -201,19 +214,21 @@ class Assignments implements Assessments {
     String pStatement;
     int maxMarks;
     char status;
-    Instructor I;
+    Instructor aI;
+    Instructor cI;
+    Instructor gI;
 
-    public Assignments(String pStatement, int maxMarks, Instructor I) {
+    public Assignments(String pStatement, int maxMarks, Instructor aI) {
         this.pStatement = pStatement;
         this.maxMarks = maxMarks;
         this.status = 'O';
-        this.I = I;
+        this.aI = aI;
     }
 
     @Override
-    public void closeAssessment() {
-        // TODO Auto-generated method stub
-
+    public void closeAssessment(Instructor cI) {
+        this.status = 'C';
+        this.cI = cI;
     }
 
     @Override
@@ -228,25 +243,28 @@ class Quizzes implements Assessments {
     String question;
     int maxMarks;// -->> by default 1. {polymorphism} {method overloading}
     char status;
-    Instructor I;
+    Instructor aI;
+    Instructor cI;
+    Instructor gI;
 
-    public Quizzes(String question, int maxMarks, Instructor I) {
+    public Quizzes(String question, int maxMarks, Instructor aI) {
         this.question = question;
         this.maxMarks = maxMarks;
         this.status = 'O';
-        this.I = I;
+        this.aI = aI;
     }
 
-    public Quizzes(String question, Instructor I) {
+    public Quizzes(String question, Instructor aI) {
         this.question = question;
         this.maxMarks = 1;
         this.status = 'O';
-        this.I = I;
+        this.aI = aI;
     }
 
     @Override
-    public void closeAssessment() {
-        // TODO Auto-generated method stub
+    public void closeAssessment(Instructor cI) {
+        this.cI = cI;
+        this.status = 'C';
 
     }
 
@@ -310,7 +328,8 @@ public class AP_assignment2 {
         // ds for lecture materials
         ArrayList<LectureMaterial> lectureMaterials = new ArrayList<>();
         // ds for assessments
-        ArrayList<Assessments> assessments = new ArrayList<>();
+        ArrayList<Assessments> oAssessments = new ArrayList<>();
+        ArrayList<Assessments> cAssessments = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
         while (choice == 'y') {
@@ -365,7 +384,7 @@ public class AP_assignment2 {
                                         System.out.println("Enter Max Marks: ");
                                         int mm = s.nextInt();
                                         s.nextLine();
-                                        assessments.add(new Assignments(ps, mm, instructors.get(ID)));
+                                        oAssessments.add(new Assignments(ps, mm, instructors.get(ID)));
                                         break;
                                     case 2:// -->> Add Quiz
                                         System.out.println("Enter Quiz Question: ");
@@ -374,9 +393,9 @@ public class AP_assignment2 {
                                         int mM = s.nextInt();
                                         s.nextLine();
                                         if (mM != 1) {
-                                            assessments.add(new Quizzes(qq, mM, instructors.get(ID)));
+                                            oAssessments.add(new Quizzes(qq, mM, instructors.get(ID)));
                                         } else {
-                                            assessments.add(new Quizzes(qq, instructors.get(ID)));
+                                            oAssessments.add(new Quizzes(qq, instructors.get(ID)));
                                         }
                                         break;
                                 }
@@ -385,11 +404,12 @@ public class AP_assignment2 {
                                 instructors.get(ID).viewLectureNotes(lectureMaterials);
                                 break;
                             case 4:// -->> View Assessments
-                                instructors.get(ID).viewAssessments(assessments);
+                                instructors.get(ID).viewAssessments(oAssessments);
                                 break;
                             case 5:// -->> Grade Assessments
                                 break;
                             case 6:// -->> Close Assessments
+                                instructors.get(ID).closeAssessments(oAssessments, cAssessments, instructors.get(ID));
                                 break;
                             case 7:// -->> View Comments
                                 break;
@@ -417,7 +437,7 @@ public class AP_assignment2 {
                                 students.get(Id).viewLectureNotes(lectureMaterials);
                                 break;
                             case 2:// -->> View assessments
-                                students.get(Id).viewAssessments(assessments);
+                                students.get(Id).viewAssessments(oAssessments);
                                 break;
                             case 3:// -->> Submit assessments
                                 break;
