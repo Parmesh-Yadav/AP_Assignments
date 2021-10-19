@@ -41,6 +41,7 @@ abstract class User {
             for (Comments C : comments) {
                 System.out.println(C.comment + " - " + C.U.getName());
                 System.out.println(C.dt);
+                System.out.println();
             }
         }
 
