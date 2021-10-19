@@ -6,26 +6,45 @@ import java.util.Scanner;
 
 abstract class User {
     void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
-        for (LectureMaterial lm : lectureMaterials) {
-            lm.viewMaterial();
-            System.out.println();
+        if (lectureMaterials.size() == 0) {
+            System.out.println("No lecture material available.");
+        } else {
+            for (LectureMaterial lm : lectureMaterials) {
+                lm.viewMaterial();
+                System.out.println();
+            }
         }
+
     };
 
-    void viewAssessments(ArrayList<Assessments> assessments) {
-        for (int i = 0; i < assessments.size(); i++) {
-            System.out.print("ID: " + (i) + " ");
-            assessments.get(i).viewAssessment();
-            System.out.println("--------------------");
+    boolean viewAssessments(ArrayList<Assessments> assessments) {
+        boolean check = false;
+        if (assessments.size() == 0) {
+            System.out.println("No assessments available.");
+            return check;
+        } else {
+            check = true;
+            for (int i = 0; i < assessments.size(); i++) {
+                System.out.print("ID: " + (i) + " ");
+                assessments.get(i).viewAssessment();
+                System.out.println("--------------------");
+            }
+            return true;
         }
+
     };
 
     void viewComments(ArrayList<Comments> comments) {
-        for (Comments C : comments) {
-            System.out.println(C.comment + " - " + C.U.getName());
-            System.out.println(C.dt);
+        if (comments.size() == 0) {
+            System.out.println("No Comments available.");
+        } else {
+            for (Comments C : comments) {
+                System.out.println(C.comment + " - " + C.U.getName());
+                System.out.println(C.dt);
+            }
         }
-    };
+
+    }
 
     void addComments(ArrayList<Comments> comments) {
         Scanner s = new Scanner(System.in);
@@ -73,14 +92,18 @@ class Instructor extends User {
 
     public void closeAssessments(ArrayList<Assessments> oAssessments, ArrayList<Assessments> cAssessments,
             Instructor cI) {
-        Scanner s = new Scanner(System.in);
-        System.out.println("List of Open Assessments: ");
-        viewAssessments(oAssessments);
-        System.out.println("Enter ID of Assignment to close: ");
-        int ID = s.nextInt();
-        oAssessments.get(ID).closeAssessment(cI);
-        cAssessments.add(oAssessments.get(ID));
-        oAssessments.remove(ID);
+        if (oAssessments.size() == 0) {
+            System.out.println("No assessments available to close");
+        } else {
+            Scanner s = new Scanner(System.in);
+            System.out.println("List of Open Assessments: ");
+            viewAssessments(oAssessments);
+            System.out.println("Enter ID of Assignment to close: ");
+            int ID = s.nextInt();
+            oAssessments.get(ID).closeAssessment(cI);
+            cAssessments.add(oAssessments.get(ID));
+            oAssessments.remove(ID);
+        }
 
     }
 
@@ -186,7 +209,7 @@ class LectureSlides implements LectureMaterial {
             System.out.println("Slide " + (i + 1) + ": " + this.sContent.get(i));
         }
         System.out.println("Number of slides: " + this.noOfSlides);
-        System.out.println("Date of Upload: "+this.dt.toString());
+        System.out.println("Date of Upload: " + this.dt.toString());
         System.out.println("Uploaded by: " + this.I.instrName);
 
     }
@@ -210,7 +233,7 @@ class LectureVideos implements LectureMaterial {
     public void viewMaterial() {
         System.out.println("Title of video: " + this.vName);
         System.out.println("Video File: " + this.fileName);
-        System.out.println("Date of Upload: "+this.dt.toString());
+        System.out.println("Date of Upload: " + this.dt.toString());
         System.out.println("Uploaded by: " + this.I.instrName);
 
     }
@@ -567,12 +590,17 @@ public class AP_assignment2 {
                                 instructors.get(ID).viewAssessments(Assessments);
                                 break;
                             case 5:// -->> Grade Assessments
-                                instructors.get(ID).viewAssessments(Assessments);
-                                System.out.println("Enter ID of assessment to view submissions: ");
-                                int atg = s.nextInt();
-                                s.nextLine();
-                                Assessments.get(atg).gradeSubs(instructors.get(ID));
-                                break;
+                                boolean check = instructors.get(ID).viewAssessments(Assessments);
+                                if (check) {
+                                    System.out.println("Enter ID of assessment to view submissions: ");
+                                    int atg = s.nextInt();
+                                    s.nextLine();
+                                    Assessments.get(atg).gradeSubs(instructors.get(ID));
+                                    break;
+                                } else {
+                                    break;
+                                }
+
                             case 6:// -->> Close Assessments
                                 instructors.get(ID).closeAssessments(oAssessments, cAssessments, instructors.get(ID));
                                 break;
@@ -608,7 +636,7 @@ public class AP_assignment2 {
                                 break;
                             case 3:// -->> Submit assessments
                                 boolean check = students.get(Id).submitAssessment(oAssessments, A, Q);
-                                if (check == true) {
+                                if (check) {
                                     System.out.println("Enter ID of assessment: ");
                                     int aid = s.nextInt();
                                     s.nextLine();
