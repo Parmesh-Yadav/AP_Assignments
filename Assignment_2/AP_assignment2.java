@@ -37,7 +37,6 @@ abstract class User {
 }
 
 interface LectureMaterial {
-    void addMaterial();
 
     void viewMaterial();
 }
@@ -57,7 +56,6 @@ interface Assessments {
 }
 
 interface Submission {
-    void checkStatus();
 
     void getMarkRecieved();
 
@@ -142,17 +140,16 @@ class Student extends User {
     }
 
     public void printGrSubs() {
-        if(this.submissions.size()==0){
+        if (this.submissions.size() == 0) {
             System.out.println("No grades to show yet");
             return;
-        }
-        else{
+        } else {
             for (int i = 0; i < this.submissions.size(); i++) {
                 this.submissions.get(i).getMarkRecieved();
                 System.out.println();
             }
         }
-        
+
     }
 
     @Override
@@ -169,7 +166,7 @@ class LectureSlides implements LectureMaterial {
     Instructor I;
     Date dt;
 
-    public LectureSlides(String sName, int noOfSlides, Instructor I,Date dt) {
+    public LectureSlides(String sName, int noOfSlides, Instructor I, Date dt) {
         this.sName = sName;
         this.noOfSlides = noOfSlides;
         this.I = I;
@@ -183,19 +180,13 @@ class LectureSlides implements LectureMaterial {
     }
 
     @Override
-    public void addMaterial() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void viewMaterial() {
         System.out.println("Title: " + this.sName);
         for (int i = 0; i < this.sContent.size(); i++) {
             System.out.println("Slide " + (i + 1) + ": " + this.sContent.get(i));
         }
         System.out.println("Number of slides: " + this.noOfSlides);
-        // date time here
+        System.out.println("Date of Upload: "+this.dt.toString());
         System.out.println("Uploaded by: " + this.I.instrName);
 
     }
@@ -208,7 +199,7 @@ class LectureVideos implements LectureMaterial {
     Instructor I;
     Date dt;
 
-    public LectureVideos(String vName, String fileName, Instructor I,Date dt) {
+    public LectureVideos(String vName, String fileName, Instructor I, Date dt) {
         this.vName = vName;
         this.fileName = fileName;
         this.I = I;
@@ -216,16 +207,10 @@ class LectureVideos implements LectureMaterial {
     }
 
     @Override
-    public void addMaterial() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void viewMaterial() {
         System.out.println("Title of video: " + this.vName);
         System.out.println("Video File: " + this.fileName);
-        // date time here
+        System.out.println("Date of Upload: "+this.dt.toString());
         System.out.println("Uploaded by: " + this.I.instrName);
 
     }
@@ -278,8 +263,12 @@ class Assignments implements Assessments {
         System.out.println(this.pStatement);
         System.out.println("Submission: ");
         String ans = s.nextLine(); // -->> check if its in .zip format only
-        stdAssDone.add(S);
-        stdWrkDone.add(new Asubmissions(ans));
+        if (ans.substring(ans.length() - 4, ans.length()).equals(".zip")) {
+            stdAssDone.add(S);
+            stdWrkDone.add(new Asubmissions(ans));
+        } else {
+            System.out.println("Wrong file format.... should be in (.zip) format.");
+        }
 
     }
 
@@ -291,7 +280,7 @@ class Assignments implements Assessments {
             if (this.stdWrkDone.get(i).status.equals("ungraded"))
                 ;
             {
-                System.out.println(" " + (i)+". " + this.stdAssDone.get(i).stdName);
+                System.out.println(" " + (i) + ". " + this.stdAssDone.get(i).stdName);
             }
         }
         System.out.println("Choose ID from these ungraded subs: ");
@@ -421,12 +410,6 @@ class Asubmissions implements Submission {
     }
 
     @Override
-    public void checkStatus() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void getMarkRecieved() {
         System.out.println("Submission: " + this.filename);
         System.out.println("Marks Scored: " + this.marksRecieved);
@@ -444,12 +427,6 @@ class Qsubmission implements Submission {
     public Qsubmission(String oneWord) {
         this.oneWord = oneWord;
         this.status = "ungraded";
-    }
-
-    @Override
-    public void checkStatus() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -530,15 +507,24 @@ public class AP_assignment2 {
                                         System.out.println("Enter number of slides: ");
                                         int nos = s.nextInt();
                                         s.nextLine();
-                                        lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID),new Date()));
+                                        lectureMaterials
+                                                .add(new LectureSlides(stopic, nos, instructors.get(ID), new Date()));
                                         break;
                                     case 2:// -->> Add Lecture Videos
                                         System.out.println("Enter Topic of Video: ");
                                         String vtopic = s.nextLine();
                                         System.out.println("Enter Filename of Video: ");
                                         String vFilename = s.nextLine();
-                                        lectureMaterials.add(new LectureVideos(vtopic, vFilename, instructors.get(ID),new Date()));
-                                        break;
+                                        if (vFilename.substring(vFilename.length() - 4, vFilename.length())
+                                                .equals(".mp4")) {
+                                            lectureMaterials.add(new LectureVideos(vtopic, vFilename,
+                                                    instructors.get(ID), new Date()));
+                                            break;
+                                        } else {
+                                            System.out.println(
+                                                    "Invalid Filename of the video... should be of (.mp4) file format");
+                                        }
+
                                 }
                                 break;
                             case 2:// -->> Add Assessments
