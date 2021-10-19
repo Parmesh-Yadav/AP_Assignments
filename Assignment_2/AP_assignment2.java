@@ -1,17 +1,18 @@
 package Assignment_2;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 abstract class User {
-    void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials){
+    void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
         for (LectureMaterial lm : lectureMaterials) {
             lm.viewMaterial();
             System.out.println();
         }
     };
 
-    void viewAssessments(ArrayList<Assessments> assessments){
+    void viewAssessments(ArrayList<Assessments> assessments) {
         for (int i = 0; i < assessments.size(); i++) {
             System.out.print("ID: " + (i) + " ");
             assessments.get(i).viewAssessment();
@@ -19,16 +20,17 @@ abstract class User {
         }
     };
 
-    void viewComments(ArrayList<Comments> comments){
-        for(Comments C: comments){
-            System.out.println(C.comment+" - "+C.U.getName());
-            //print timestamp
+    void viewComments(ArrayList<Comments> comments) {
+        for (Comments C : comments) {
+            System.out.println(C.comment + " - " + C.U.getName());
+            System.out.println(C.dt);
         }
     };
 
-    void addComments(ArrayList<Comments> comments){
+    void addComments(ArrayList<Comments> comments) {
         Scanner s = new Scanner(System.in);
-        comments.add(new Comments(this, s.nextLine()));
+        System.out.println("Enter Comment");
+        comments.add(new Comments(this, s.nextLine(), new Date()));
     };
 
     abstract String getName();
@@ -58,7 +60,7 @@ interface Submission {
     void checkStatus();
 
     void getMarkRecieved();
-    
+
 }
 
 class Instructor extends User {
@@ -93,7 +95,7 @@ class Instructor extends User {
     @Override
     public String getName() {
         return this.instrName;
-        
+
     }
 
 }
@@ -107,6 +109,7 @@ class Student extends User {
     public Student(String stdName) {
         this.stdName = stdName;
         this.stdID = noOfStd++;
+        this.submissions = new ArrayList<>();
     }
 
     public static void printStudents(ArrayList<Student> students) {
@@ -139,10 +142,17 @@ class Student extends User {
     }
 
     public void printGrSubs() {
-        for(int i=0;i<this.submissions.size();i++){
-            this.submissions.get(i).getMarkRecieved();
-            System.out.println();
+        if(this.submissions.size()==0){
+            System.out.println("No grades to show yet");
+            return;
         }
+        else{
+            for (int i = 0; i < this.submissions.size(); i++) {
+                this.submissions.get(i).getMarkRecieved();
+                System.out.println();
+            }
+        }
+        
     }
 
     @Override
@@ -157,12 +167,13 @@ class LectureSlides implements LectureMaterial {
     int noOfSlides;
     ArrayList<String> sContent = new ArrayList<>();
     Instructor I;
-    // date time left
+    Date dt;
 
-    public LectureSlides(String sName, int noOfSlides, Instructor I) {
+    public LectureSlides(String sName, int noOfSlides, Instructor I,Date dt) {
         this.sName = sName;
         this.noOfSlides = noOfSlides;
         this.I = I;
+        this.dt = dt;
         Scanner s = new Scanner(System.in);
         for (int i = 0; i < noOfSlides; i++) {
             System.out.println("Content of slide " + (i + 1));
@@ -195,12 +206,13 @@ class LectureVideos implements LectureMaterial {
     String vName;
     String fileName;// -->> with extension .mp4
     Instructor I;
-    // date time left
+    Date dt;
 
-    public LectureVideos(String vName, String fileName, Instructor I) {
+    public LectureVideos(String vName, String fileName, Instructor I,Date dt) {
         this.vName = vName;
         this.fileName = fileName;
         this.I = I;
+        this.dt = dt;
     }
 
     @Override
@@ -264,39 +276,43 @@ class Assignments implements Assessments {
     public void doAssessment(Student S) {
         Scanner s = new Scanner(System.in);
         System.out.println(this.pStatement);
-        String ans = s.nextLine(); //-->> check if its in .zip format only
+        System.out.println("Submission: ");
+        String ans = s.nextLine(); // -->> check if its in .zip format only
         stdAssDone.add(S);
         stdWrkDone.add(new Asubmissions(ans));
-        
+
     }
 
     @Override
     public void gradeSubs(Instructor instructor) {
         Scanner s = new Scanner(System.in);
         // this.gI = instructor;
-        for(int i=0;i<this.stdAssDone.size();i++){
-            if(this.stdWrkDone.get(i).status.equals("ungraded"));{
-                System.out.println(" "+(i)+this.stdAssDone.get(i).stdName);
+        for (int i = 0; i < this.stdAssDone.size(); i++) {
+            if (this.stdWrkDone.get(i).status.equals("ungraded"))
+                ;
+            {
+                System.out.println(" " + (i)+". " + this.stdAssDone.get(i).stdName);
             }
         }
         System.out.println("Choose ID from these ungraded subs: ");
-        int id = s.nextInt(); s.nextLine();
+        int id = s.nextInt();
+        s.nextLine();
         System.out.println("Submission: ");
-        System.out.println("Submission: "+this.stdWrkDone.get(id).filename);
+        System.out.println("Submission: " + this.stdWrkDone.get(id).filename);
         System.out.println("-------------------");
-        System.out.println("Max Marks: "+this.maxMarks);
+        System.out.println("Max Marks: " + this.maxMarks);
         System.out.println("Marks Scored: ");
-        int mr = s.nextInt(); s.nextLine();
-        if(mr>this.maxMarks){
+        int mr = s.nextInt();
+        s.nextLine();
+        if (mr > this.maxMarks) {
             System.out.println("Invalid Marks Given");
-        }
-        else{
+        } else {
             this.stdWrkDone.get(id).marksRecieved = mr;
             this.stdWrkDone.get(id).status = "graded";
             this.stdWrkDone.get(id).gI = instructor;
-            this.stdAssDone.get(id).submissions.add(this.stdWrkDone.get(id)); 
+            this.stdAssDone.get(id).submissions.add(this.stdWrkDone.get(id));
         }
-        
+
     }
 
 }
@@ -353,39 +369,42 @@ class Quizzes implements Assessments {
     public void doAssessment(Student S) {
         Scanner s = new Scanner(System.in);
         System.out.println(this.question);
-        String ans = s.next(); //-->> One Word Answer
+        String ans = s.next(); // -->> One Word Answer
         stdQuizDone.add(S);
         stdWrkDone.add(new Qsubmission(ans));
-        
+
     }
 
     @Override
     public void gradeSubs(Instructor instructor) {
         Scanner s = new Scanner(System.in);
         // this.gI = instructor;
-        for(int i=0;i<this.stdQuizDone.size();i++){
-            if(this.stdWrkDone.get(i).status.equals("ungraded"));{
-                System.out.println(" "+(i)+this.stdQuizDone.get(i).stdName);
+        for (int i = 0; i < this.stdQuizDone.size(); i++) {
+            if (this.stdWrkDone.get(i).status.equals("ungraded"))
+                ;
+            {
+                System.out.println(" " + (i) + this.stdQuizDone.get(i).stdName);
             }
         }
         System.out.println("Choose ID from these ungraded subs: ");
-        int id = s.nextInt(); s.nextLine();
+        int id = s.nextInt();
+        s.nextLine();
         System.out.println("Submission: ");
-        System.out.println("Submission: "+this.stdWrkDone.get(id).oneWord);
+        System.out.println("Submission: " + this.stdWrkDone.get(id).oneWord);
         System.out.println("-------------------");
-        System.out.println("Max Marks: "+this.maxMarks);
+        System.out.println("Max Marks: " + this.maxMarks);
         System.out.println("Marks Scored: ");
-        int mr = s.nextInt(); s.nextLine();
-        if(mr>this.maxMarks){
+        int mr = s.nextInt();
+        s.nextLine();
+        if (mr > this.maxMarks) {
             System.out.println("Invalid Marks Given");
-        }
-        else{
+        } else {
             this.stdWrkDone.get(id).marksRecieved = mr;
             this.stdWrkDone.get(id).status = "graded";
             this.stdWrkDone.get(id).gI = instructor;
-            this.stdQuizDone.get(id).submissions.add(this.stdWrkDone.get(id)); 
+            this.stdQuizDone.get(id).submissions.add(this.stdWrkDone.get(id));
         }
-        
+
     }
 
 }
@@ -409,9 +428,9 @@ class Asubmissions implements Submission {
 
     @Override
     public void getMarkRecieved() {
-        System.out.println("Submission: "+this.filename);
-        System.out.println("Marks Scored: "+ this.marksRecieved);
-        System.out.println("Graded by: "+this.gI.instrName);
+        System.out.println("Submission: " + this.filename);
+        System.out.println("Marks Scored: " + this.marksRecieved);
+        System.out.println("Graded by: " + this.gI.instrName);
 
     }
 }
@@ -435,21 +454,22 @@ class Qsubmission implements Submission {
 
     @Override
     public void getMarkRecieved() {
-        System.out.println("Submission: "+this.oneWord);
-        System.out.println("Marks Scored: "+ this.marksRecieved);
-        System.out.println("Graded by: "+this.gI.instrName);
+        System.out.println("Submission: " + this.oneWord);
+        System.out.println("Marks Scored: " + this.marksRecieved);
+        System.out.println("Graded by: " + this.gI.instrName);
 
     }
 }
 
-class Comments{
+class Comments {
     User U;
     String comment;
-    //timestamp
+    String dt;
 
-    public Comments(User U,String comment){
+    public Comments(User U, String comment, Date dt) {
         this.U = U;
         this.comment = comment;
+        this.dt = dt.toString();
     }
 }
 
@@ -478,7 +498,7 @@ public class AP_assignment2 {
         ArrayList<Assessments> cAssessments = new ArrayList<>();
         Assignments A = new Assignments("Dummt", 0, new Instructor("Dummy"));
         Quizzes Q = new Quizzes("Dummy", 0, new Instructor("Dummy"));
-        //ds for comments
+        // ds for comments
         ArrayList<Comments> comments = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
@@ -510,14 +530,14 @@ public class AP_assignment2 {
                                         System.out.println("Enter number of slides: ");
                                         int nos = s.nextInt();
                                         s.nextLine();
-                                        lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID)));
+                                        lectureMaterials.add(new LectureSlides(stopic, nos, instructors.get(ID),new Date()));
                                         break;
                                     case 2:// -->> Add Lecture Videos
                                         System.out.println("Enter Topic of Video: ");
                                         String vtopic = s.nextLine();
                                         System.out.println("Enter Filename of Video: ");
                                         String vFilename = s.nextLine();
-                                        lectureMaterials.add(new LectureVideos(vtopic, vFilename, instructors.get(ID)));
+                                        lectureMaterials.add(new LectureVideos(vtopic, vFilename, instructors.get(ID),new Date()));
                                         break;
                                 }
                                 break;
@@ -532,7 +552,7 @@ public class AP_assignment2 {
                                         System.out.println("Enter Max Marks: ");
                                         int mm = s.nextInt();
                                         s.nextLine();
-                                        Assessments a =  new Assignments(ps, mm, instructors.get(ID));
+                                        Assessments a = new Assignments(ps, mm, instructors.get(ID));
                                         oAssessments.add(a);
                                         Assessments.add(a);
                                         break;
@@ -543,11 +563,11 @@ public class AP_assignment2 {
                                         int mM = s.nextInt();
                                         s.nextLine();
                                         if (mM != 1) {
-                                            Assessments q =  new Quizzes(qq, mM, instructors.get(ID));
+                                            Assessments q = new Quizzes(qq, mM, instructors.get(ID));
                                             oAssessments.add(q);
                                             Assessments.add(q);
                                         } else {
-                                            Assessments q2 =  new Quizzes(qq, instructors.get(ID));
+                                            Assessments q2 = new Quizzes(qq, instructors.get(ID));
                                             oAssessments.add(q2);
                                             Assessments.add(q2);
                                         }
@@ -563,7 +583,8 @@ public class AP_assignment2 {
                             case 5:// -->> Grade Assessments
                                 instructors.get(ID).viewAssessments(Assessments);
                                 System.out.println("Enter ID of assessment to view submissions: ");
-                                int atg = s.nextInt(); s.nextLine();
+                                int atg = s.nextInt();
+                                s.nextLine();
                                 Assessments.get(atg).gradeSubs(instructors.get(ID));
                                 break;
                             case 6:// -->> Close Assessments
@@ -600,16 +621,17 @@ public class AP_assignment2 {
                                 students.get(Id).viewAssessments(Assessments);
                                 break;
                             case 3:// -->> Submit assessments
-                                boolean check = students.get(Id).submitAssessment(oAssessments,A,Q);
-                                if(check == true){
+                                boolean check = students.get(Id).submitAssessment(oAssessments, A, Q);
+                                if (check == true) {
                                     System.out.println("Enter ID of assessment: ");
-                                    int aid = s.nextInt(); s.nextLine();
+                                    int aid = s.nextInt();
+                                    s.nextLine();
                                     oAssessments.get(aid).doAssessment(students.get(Id));
+                                } else {
+                                    System.out.println(
+                                            "No open assignments are pending for student " + students.get(Id).stdName);
                                 }
-                                else{
-                                    System.out.println("No open assignments are pending for student "+students.get(Id).stdName);
-                                }
-                                
+
                                 break;
                             case 4:// -->> View grades
                                 System.out.println("Graded Submissions: ");
