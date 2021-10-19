@@ -3,14 +3,35 @@ package Assignment_2;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-interface User {
-    void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials);
+abstract class User {
+    void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials){
+        for (LectureMaterial lm : lectureMaterials) {
+            lm.viewMaterial();
+            System.out.println();
+        }
+    };
 
-    void viewAssessments(ArrayList<Assessments> assessments);
+    void viewAssessments(ArrayList<Assessments> assessments){
+        for (int i = 0; i < assessments.size(); i++) {
+            System.out.print("ID: " + (i) + " ");
+            assessments.get(i).viewAssessment();
+            System.out.println("--------------------");
+        }
+    };
 
-    void viewComments();
+    void viewComments(ArrayList<Comments> comments){
+        for(Comments C: comments){
+            System.out.println(C.comment+" - "+C.U.getName());
+            //print timestamp
+        }
+    };
 
-    void addComments();
+    void addComments(ArrayList<Comments> comments){
+        Scanner s = new Scanner(System.in);
+        comments.add(new Comments(this, s.nextLine()));
+    };
+
+    abstract String getName();
 }
 
 interface LectureMaterial {
@@ -37,10 +58,10 @@ interface Submission {
     void checkStatus();
 
     void getMarkRecieved();
-    void printGrSub();
+    
 }
 
-class Instructor implements User {
+class Instructor extends User {
     static int noOfInstr = 0;
     int instrID;
     String instrName;
@@ -48,25 +69,6 @@ class Instructor implements User {
     public Instructor(String instrName) {
         this.instrName = instrName;
         this.instrID = noOfInstr++;
-    }
-
-    @Override
-    public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
-        for (LectureMaterial lm : lectureMaterials) {
-            lm.viewMaterial();
-            System.out.println();
-        }
-
-    }
-
-    @Override
-    public void viewAssessments(ArrayList<Assessments> assessments) {
-        for (int i = 0; i < assessments.size(); i++) {
-            System.out.print("ID: " + (i) + " ");
-            assessments.get(i).viewAssessment();
-            System.out.println("--------------------");
-        }
-
     }
 
     public void closeAssessments(ArrayList<Assessments> oAssessments, ArrayList<Assessments> cAssessments,
@@ -82,27 +84,21 @@ class Instructor implements User {
 
     }
 
-    @Override
-    public void viewComments() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void addComments() {
-        // TODO Auto-generated method stub
-
-    }
-
     public static void printInstructors(ArrayList<Instructor> instructors) {
         for (int i = 0; i < instructors.size(); i++) {
             System.out.println(instructors.get(i).instrID + ". " + instructors.get(i).instrName);
         }
     }
 
+    @Override
+    public String getName() {
+        return this.instrName;
+        
+    }
+
 }
 
-class Student implements User {
+class Student extends User {
     static int noOfStd = 0;
     int stdID;
     String stdName;
@@ -111,37 +107,6 @@ class Student implements User {
     public Student(String stdName) {
         this.stdName = stdName;
         this.stdID = noOfStd++;
-    }
-
-    @Override
-    public void viewLectureNotes(ArrayList<LectureMaterial> lectureMaterials) {
-        for (LectureMaterial lm : lectureMaterials) {
-            lm.viewMaterial();
-            System.out.println();
-        }
-
-    }
-
-    @Override
-    public void viewAssessments(ArrayList<Assessments> assessments) {
-        for (int i = 0; i < assessments.size(); i++) {
-            System.out.print("ID: " + (i) + " ");
-            assessments.get(i).viewAssessment();
-            System.out.println("--------------------");
-        }
-
-    }
-
-    @Override
-    public void viewComments() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void addComments() {
-        // TODO Auto-generated method stub
-
     }
 
     public static void printStudents(ArrayList<Student> students) {
@@ -175,9 +140,14 @@ class Student implements User {
 
     public void printGrSubs() {
         for(int i=0;i<this.submissions.size();i++){
-            this.submissions.get(i).printGrSub();
+            this.submissions.get(i).getMarkRecieved();
             System.out.println();
         }
+    }
+
+    @Override
+    public String getName() {
+        return this.stdName;
     }
 
 }
@@ -439,16 +409,10 @@ class Asubmissions implements Submission {
 
     @Override
     public void getMarkRecieved() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void printGrSub() {
         System.out.println("Submission: "+this.filename);
         System.out.println("Marks Scored: "+ this.marksRecieved);
         System.out.println("Graded by: "+this.gI.instrName);
-        
+
     }
 }
 
@@ -471,16 +435,21 @@ class Qsubmission implements Submission {
 
     @Override
     public void getMarkRecieved() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void printGrSub() {
         System.out.println("Submission: "+this.oneWord);
         System.out.println("Marks Scored: "+ this.marksRecieved);
         System.out.println("Graded by: "+this.gI.instrName);
-        
+
+    }
+}
+
+class Comments{
+    User U;
+    String comment;
+    //timestamp
+
+    public Comments(User U,String comment){
+        this.U = U;
+        this.comment = comment;
     }
 }
 
@@ -509,8 +478,8 @@ public class AP_assignment2 {
         ArrayList<Assessments> cAssessments = new ArrayList<>();
         Assignments A = new Assignments("Dummt", 0, new Instructor("Dummy"));
         Quizzes Q = new Quizzes("Dummy", 0, new Instructor("Dummy"));
-        // ArrayList<Assignments> oAssignments = new ArrayList<>();
-        // ArrayList<Quizzes> oQuizzes = new ArrayList<>();
+        //ds for comments
+        ArrayList<Comments> comments = new ArrayList<>();
         // menu driven starts from here
         char choice = 'y';
         while (choice == 'y') {
@@ -601,8 +570,10 @@ public class AP_assignment2 {
                                 instructors.get(ID).closeAssessments(oAssessments, cAssessments, instructors.get(ID));
                                 break;
                             case 7:// -->> View Comments
+                                instructors.get(ID).viewComments(comments);
                                 break;
                             case 8:// -->> Add comments
+                                instructors.get(ID).addComments(comments);
                                 break;
                             case 9:// -->> Logout
                                 Choice = 'n';
@@ -645,8 +616,10 @@ public class AP_assignment2 {
                                 students.get(Id).printGrSubs();
                                 break;
                             case 5:// -->> View comments
+                                students.get(Id).viewComments(comments);
                                 break;
                             case 6:// -->> Add comments
+                                students.get(Id).addComments(comments);
                                 break;
                             case 7:// -->> Logout
                                 CHoice = 'n';
