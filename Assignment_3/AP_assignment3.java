@@ -64,12 +64,32 @@ class Matrix {
     }
 
     public void printMatrix() {
-        for (int i = 0; i < this.getR(); i++) {
-            for (int j = 0; j < this.getC(); j++) {
-                System.out.print(this.getM()[i][j] + " ");
+        if(!this.getMTypes().contains("Diagonal Matrix")){
+            for (int i = 0; i < this.getR(); i++) {
+                for (int j = 0; j < this.getC(); j++) {
+                    System.out.print(this.getM()[i][j] + " ");
+                }
+                System.out.println();
             }
-            System.out.println();
         }
+        else{
+            int a = 0;
+            if(this.getC() == 2 || this.getC() == 3){
+                for(int i=0;i<this.getR();i++){
+                    for(int j=0;j<this.getC();j++){
+                        if(i == j){
+                            System.out.print(this.getM()[0][a]+" ");
+                            a++;
+                        }
+                        else{
+                            System.out.print(0+" ");
+                        }
+                    }
+                    System.out.println();
+                }
+            }
+        }
+        
     }
 
     public void printTypes() {
@@ -193,19 +213,75 @@ class Matrix {
         }
     }
 
-    public static void singular(Matrix m){
+    public static void singular(Matrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            if(m.getC() == 2){
-                if(Matrix.determinant2(m)==0){
+            if (m.getC() == 2) {
+                if (Matrix.determinant2(m) == 0) {
                     m.mTypes.add("Singular Matrix");
                 }
             }
-            if(m.getC() == 3){
-                if(Matrix.determinant3(m)==0){
+            if (m.getC() == 3) {
+                if (Matrix.determinant3(m) == 0) {
                     m.mTypes.add("Singular Matrix");
                 }
             }
         }
+    }
+
+    public static void diagonal(Matrix m){
+        if (m.mTypes.contains("Upper Triangular Matrix") && m.mTypes.contains("Lower Triangular Matrix")){
+            m.mTypes.add("Diagonal Matrix");
+
+            int[][] temp = new int[1][m.getC()];
+            
+            if(m.getC() == 2){
+                temp[0][0] = m.getM()[0][0];
+                temp[0][1] = m.getM()[1][1];
+            }
+            else if(m.getC() == 3){
+                temp[0][0] = m.getM()[0][0];
+                temp[0][1] = m.getM()[1][1];
+                temp[0][2] = m.getM()[2][2];
+            }
+
+            m.setM(temp);
+        }
+    }
+
+    public static void scalar(Matrix m){
+        if (m.mTypes.contains("Diagonal Matrix")){
+            if(m.getC() == 2){
+                if(m.getM()[0][0] == m.getM()[0][1]){
+
+                }
+            }
+            else if(m.getC() == 3){
+                if((m.getM()[0][0] == m.getM()[0][1]) && (m.getM()[0][1] == m.getM()[0][1])){
+                    m.mTypes.add("Scalar Matrix");
+                }
+            }
+        }
+    }
+
+    public static void identity(Matrix m){
+        if(m.getC() == 1){
+            if(m.getM()[0][0] == 1){
+
+            }
+        }
+        if (m.mTypes.contains("Scalar Matrix")){
+            if(m.getC() == 2){
+                if(m.getM()[0][0] == 1 & m.getM()[0][1] == 1){
+                    m.mTypes.add("Identity Matrix");
+                }
+            }
+            else if(m.getC() == 3){
+                if(m.getM()[0][0] == 1 & m.getM()[0][1] == 1 && m.getM()[0][2] == 1){
+                    m.mTypes.add("Identity Matrix");
+                }
+            }
+        }
+        
     }
 
     public static void setType(Matrix m) {
@@ -217,9 +293,9 @@ class Matrix {
         Matrix.upperT(m);
         Matrix.lowerT(m);
         Matrix.singular(m);
-        // 10. Diagonal Matrix
-        // 11. Scalar Matrix
-        // 12. Identity Matrix
+        Matrix.diagonal(m);
+        Matrix.scalar(m);
+        Matrix.identity(m);
         // 13. Singleton Matrix
         // 14. Ones Matrix
         // 15. Null Matrix
@@ -289,6 +365,27 @@ public class AP_assignment3 {
             case 9:// Compute means: row-wise mean, column-wise mean, mean of all the elements.
                 break;
             case 10:// Compute determinants
+                System.out.println("Choose a matrix: ");
+                for (Matrix matrix : matrices) {
+                    System.out.println(matrix.getID() + " : ");
+                    matrix.printMatrix();
+
+                }
+                int iD = s.nextInt();
+                if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
+                    if(matrices.get(iD).getC() == 1){
+                        System.out.println("Ans: "+matrices.get(iD).getM()[0][0]);
+                    }
+                    else if (matrices.get(iD).getC() == 2) {
+                        System.out.println("Ans : " + Matrix.determinant2(matrices.get(iD)));
+                    }
+                    else if (matrices.get(iD).getC() == 3) {
+                        System.out.println("Ans : " + Matrix.determinant3(matrices.get(iD)));
+                    }
+                } else {
+                    System.out.println("Not a square Matrix");
+                }
+
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
                 break;
