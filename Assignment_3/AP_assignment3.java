@@ -92,6 +92,23 @@ class Matrix {
         return T;
     }
 
+    public static int determinant3(Matrix m) {
+        int x, y, z;
+        x = (m.getM()[0][0] * (m.getM()[1][1] * m.getM()[2][2] - m.getM()[1][2] * m.getM()[2][1]));
+        y = (m.getM()[0][1] * (m.getM()[1][0] * m.getM()[2][2] - m.getM()[1][2] * m.getM()[2][0]));
+        z = (m.getM()[0][2] * (m.getM()[1][0] * m.getM()[2][1] - m.getM()[1][1] * m.getM()[2][0]));
+
+        return (x - y + z);
+    }
+
+    public static int determinant2(Matrix m) {
+        int x, y;
+        x = (m.getM()[0][0] * m.getM()[1][1]);
+        y = (m.getM()[0][1] * m.getM()[1][0]);
+
+        return (x - y);
+    }
+
     public static void squareRec(Matrix m) {
         if (m.C == m.R) {
             m.mTypes.add("Square Matrix");
@@ -113,24 +130,80 @@ class Matrix {
     }
 
     public static void symmetrix(Matrix m) {
-        if (m.mTypes.contains("Square")) {
-            if (Arrays.deepEquals(m.getM(), Matrix.Transpose(m).M)) {
+        if (m.mTypes.contains("Square Matrix")) {
+            if (Arrays.deepEquals(m.getM(), Matrix.Transpose(m).getM())) {
                 m.mTypes.add("Symmetrix Matrix");
             }
         }
     }
 
     public static void skewSymmetrix(Matrix m) {
-        if (m.mTypes.contains("Square")) {
+        if (m.mTypes.contains("Square Matrix")) {
             Matrix temp = new Matrix(m.getR(), m.getC());
-            temp.M = m.M;
+            temp.M = new int[m.getR()][m.getC()];
+            // temp.M = m.M;
             for (int i = 0; i < temp.getR(); i++) {
                 for (int j = 0; j < temp.getC(); j++) {
-                    temp.getM()[i][j] = -temp.getM()[i][j];
+                    temp.getM()[i][j] = -m.getM()[i][j];
                 }
             }
             if (Arrays.deepEquals(temp.getM(), Matrix.Transpose(m).M)) {
                 m.mTypes.add("Skew-Symmetrix Matrix");
+            }
+        }
+    }
+
+    public static void upperT(Matrix m) {
+        if (m.mTypes.contains("Square Matrix")) {
+            boolean check = true;
+            for (int i = 0; i < m.getR(); i++) {
+                for (int j = 0; j < m.getC(); j++) {
+                    if (i > j) {
+                        if (m.getM()[i][j] != 0) {
+                            check = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (check) {
+                m.mTypes.add("Upper Triangular Matrix");
+            }
+
+        }
+    }
+
+    public static void lowerT(Matrix m) {
+        if (m.mTypes.contains("Square Matrix")) {
+            boolean check = true;
+            for (int i = 0; i < m.getR(); i++) {
+                for (int j = 0; j < m.getC(); j++) {
+                    if (i < j) {
+                        if (m.getM()[i][j] != 0) {
+                            check = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (check) {
+                m.mTypes.add("Lower Triangular Matrix");
+            }
+
+        }
+    }
+
+    public static void singular(Matrix m){
+        if (m.mTypes.contains("Square Matrix")) {
+            if(m.getC() == 2){
+                if(Matrix.determinant2(m)==0){
+                    m.mTypes.add("Singular Matrix");
+                }
+            }
+            if(m.getC() == 3){
+                if(Matrix.determinant3(m)==0){
+                    m.mTypes.add("Singular Matrix");
+                }
             }
         }
     }
@@ -141,10 +214,9 @@ class Matrix {
         Matrix.Column(m);
         Matrix.symmetrix(m);
         Matrix.skewSymmetrix(m);
-        // 6. Skew-symmetric Matrix
-        // 7. Upper-triangular Matrix
-        // 8. Lower-triangular Matrix
-        // 9. Singular Matrix
+        Matrix.upperT(m);
+        Matrix.lowerT(m);
+        Matrix.singular(m);
         // 10. Diagonal Matrix
         // 11. Scalar Matrix
         // 12. Identity Matrix
@@ -155,7 +227,8 @@ class Matrix {
 }
 
 public class AP_assignment3 {
-    // the zero matrices are the only matrix, which is both symmetric and skew-symmetric matrix.
+    // the zero matrices are the only matrix, which is both symmetric and
+    // skew-symmetric matrix.
     // symm and skew symm doesnt work.
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -229,6 +302,7 @@ public class AP_assignment3 {
                     // matrix-type labels.
                 break;
             case 16:
+                choice = 'n';
                 break;
             }
         }
