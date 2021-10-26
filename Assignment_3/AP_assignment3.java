@@ -117,6 +117,10 @@ class Matrix {
     }
 
     public static Matrix Transpose(Matrix m) {
+        if(m.getMTypes().contains("Diagonal Matrix")||m.getMTypes().contains("Ones Matrix")||m.getMTypes().contains("Null Matrix")){
+            Matrix T = m;
+            return T;
+        }
         Matrix T = new Matrix(m.getR(), m.getC());
         for (int i = 0; i < m.getR(); i++) {
             for (int j = 0; j < m.getC(); j++) {
@@ -127,6 +131,9 @@ class Matrix {
     }
 
     public static int determinant3(Matrix m) {
+        if(m.getMTypes().contains("Singular Matrix")){
+            return 0;
+        }
         int x, y, z;
         x = (m.getM()[0][0] * (m.getM()[1][1] * m.getM()[2][2] - m.getM()[1][2] * m.getM()[2][1]));
         y = (m.getM()[0][1] * (m.getM()[1][0] * m.getM()[2][2] - m.getM()[1][2] * m.getM()[2][0]));
@@ -135,7 +142,19 @@ class Matrix {
         return (x - y + z);
     }
 
+    public static int determinantDiag(Matrix m) {
+        int ans = 1;
+        int i = 0;
+        for (int j = 0; j < m.getC(); j++) {
+            ans = ans * m.getM()[i][j];
+        }
+        return ans;
+    }
+
     public static int determinant2(Matrix m) {
+        if(m.getMTypes().contains("Singular Matrix")){
+            return 0;
+        }
         int x, y;
         x = (m.getM()[0][0] * m.getM()[1][1]);
         y = (m.getM()[0][1] * m.getM()[1][0]);
@@ -189,40 +208,46 @@ class Matrix {
 
     public static void upperT(Matrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            boolean check = true;
-            for (int i = 0; i < m.getR(); i++) {
-                for (int j = 0; j < m.getC(); j++) {
-                    if (i > j) {
-                        if (m.getM()[i][j] != 0) {
-                            check = false;
-                            break;
+            if(!(m.getR() == 1 && m.getC() == 1)){
+                boolean check = true;
+                for (int i = 0; i < m.getR(); i++) {
+                    for (int j = 0; j < m.getC(); j++) {
+                        if (i > j) {
+                            if (m.getM()[i][j] != 0) {
+                                check = false;
+                                break;
+                            }
                         }
                     }
                 }
+                if (check) {
+                    m.mTypes.add("Upper Triangular Matrix");
+                }
             }
-            if (check) {
-                m.mTypes.add("Upper Triangular Matrix");
-            }
+            
 
         }
     }
 
     public static void lowerT(Matrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            boolean check = true;
-            for (int i = 0; i < m.getR(); i++) {
-                for (int j = 0; j < m.getC(); j++) {
-                    if (i < j) {
-                        if (m.getM()[i][j] != 0) {
-                            check = false;
-                            break;
+            if(!(m.getR() == 1 && m.getC() == 1)){
+                boolean check = true;
+                for (int i = 0; i < m.getR(); i++) {
+                    for (int j = 0; j < m.getC(); j++) {
+                        if (i < j) {
+                            if (m.getM()[i][j] != 0) {
+                                check = false;
+                                break;
+                            }
                         }
                     }
                 }
+                if (check) {
+                    m.mTypes.add("Lower Triangular Matrix");
+                }
             }
-            if (check) {
-                m.mTypes.add("Lower Triangular Matrix");
-            }
+            
 
         }
     }
@@ -304,6 +329,7 @@ class Matrix {
     }
 
     public static void ones(Matrix m) {
+        if(m.getR() == 1 && m.getC() == 1){}
         boolean check = true;
         for (int i = 0; i < m.getR(); i++) {
             for (int j = 0; j < m.getC(); j++) {
@@ -317,10 +343,16 @@ class Matrix {
             }
         }
         if (check) {
-            m.mTypes.add("Ones Matrix");
-            int[][] temp = new int[1][1];
-            temp[0][0] = 1;
-            m.setM(temp);
+            if(m.getR() == 1 && m.getC() == 1){
+                return;
+            }
+            else{
+                m.mTypes.add("Ones Matrix");
+                int[][] temp = new int[1][1];
+                temp[0][0] = 1;
+                m.setM(temp);
+            }
+            
         }
     }
 
@@ -349,11 +381,11 @@ class Matrix {
         Matrix.squareRec(m);
         Matrix.Row(m);
         Matrix.Column(m);
-        Matrix.symmetrix(m);
+        Matrix.symmetrix(m);// transpose check before re-construction
         Matrix.skewSymmetrix(m);
         Matrix.upperT(m);
         Matrix.lowerT(m);
-        Matrix.singular(m);
+        Matrix.singular(m);// determinant check before re-construction
         Matrix.diagonal(m);
         Matrix.scalar(m);
         Matrix.identity(m);
@@ -364,7 +396,7 @@ class Matrix {
 }
 
 public class AP_assignment3 {
-    // symm and skew symm doesnt work.
+    // null square matrices don't get initialized??!!!!!!
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         ArrayList<Matrix> matrices = new ArrayList<>();
@@ -431,8 +463,19 @@ public class AP_assignment3 {
 
                 }
                 int iD = s.nextInt();
+                if (matrices.get(iD).getMTypes().contains("Null Matrix")) {
+                    System.out.println("Ans: " + 0);
+                }
                 if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
-                    if (matrices.get(iD).getC() == 1) {
+                    if (matrices.get(iD).getMTypes().contains("Diagonal Matrix")) {
+                        System.out.println("Ans: " + Matrix.determinantDiag(matrices.get(iD)));
+                    } else if (matrices.get(iD).getMTypes().contains("Ones Matrix")) {
+                        if (matrices.get(iD).getC() >= 2) {
+                            System.out.println("Ans: " + 0);
+                        } else {
+                            System.out.println("Ans: " + matrices.get(iD).getM()[0][0]);
+                        }
+                    } else if (matrices.get(iD).getC() == 1) {
                         System.out.println("Ans: " + matrices.get(iD).getM()[0][0]);
                     } else if (matrices.get(iD).getC() == 2) {
                         System.out.println("Ans : " + Matrix.determinant2(matrices.get(iD)));
