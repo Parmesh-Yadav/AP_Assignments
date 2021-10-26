@@ -466,7 +466,7 @@ public class AP_assignment3 {
                 if (matrices.get(iD).getMTypes().contains("Null Matrix")) {
                     System.out.println("Ans: " + 0);
                 }
-                if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
+                else if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
                     if (matrices.get(iD).getMTypes().contains("Diagonal Matrix")) {
                         System.out.println("Ans: " + Matrix.determinantDiag(matrices.get(iD)));
                     } else if (matrices.get(iD).getMTypes().contains("Ones Matrix")) {
