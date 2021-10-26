@@ -64,32 +64,46 @@ class Matrix {
     }
 
     public void printMatrix() {
-        if(!this.getMTypes().contains("Diagonal Matrix")){
+        if (this.getMTypes().contains("Ones Matrix") || this.getMTypes().contains("Null Matrix")) {
+            if (this.getM()[0][0] == 0) {
+                for (int i = 0; i < this.getR(); i++) {
+                    for (int j = 0; j < this.getC(); j++) {
+                        System.out.print(0 + " ");
+                    }
+                    System.out.println();
+                }
+            } else if (this.getM()[0][0] == 1) {
+                for (int i = 0; i < this.getR(); i++) {
+                    for (int j = 0; j < this.getC(); j++) {
+                        System.out.print(1 + " ");
+                    }
+                    System.out.println();
+                }
+            }
+        } else if (!this.getMTypes().contains("Diagonal Matrix")) {
             for (int i = 0; i < this.getR(); i++) {
                 for (int j = 0; j < this.getC(); j++) {
                     System.out.print(this.getM()[i][j] + " ");
                 }
                 System.out.println();
             }
-        }
-        else{
+        } else if (this.getMTypes().contains("Diagonal Matrix")) {
             int a = 0;
-            if(this.getC() == 2 || this.getC() == 3){
-                for(int i=0;i<this.getR();i++){
-                    for(int j=0;j<this.getC();j++){
-                        if(i == j){
-                            System.out.print(this.getM()[0][a]+" ");
+            if (this.getC() == 2 || this.getC() == 3) {
+                for (int i = 0; i < this.getR(); i++) {
+                    for (int j = 0; j < this.getC(); j++) {
+                        if (i == j) {
+                            System.out.print(this.getM()[0][a] + " ");
                             a++;
-                        }
-                        else{
-                            System.out.print(0+" ");
+                        } else {
+                            System.out.print(0 + " ");
                         }
                     }
                     System.out.println();
                 }
             }
         }
-        
+
     }
 
     public void printTypes() {
@@ -228,17 +242,16 @@ class Matrix {
         }
     }
 
-    public static void diagonal(Matrix m){
-        if (m.mTypes.contains("Upper Triangular Matrix") && m.mTypes.contains("Lower Triangular Matrix")){
+    public static void diagonal(Matrix m) {
+        if (m.mTypes.contains("Upper Triangular Matrix") && m.mTypes.contains("Lower Triangular Matrix")) {
             m.mTypes.add("Diagonal Matrix");
 
             int[][] temp = new int[1][m.getC()];
-            
-            if(m.getC() == 2){
+
+            if (m.getC() == 2) {
                 temp[0][0] = m.getM()[0][0];
                 temp[0][1] = m.getM()[1][1];
-            }
-            else if(m.getC() == 3){
+            } else if (m.getC() == 3) {
                 temp[0][0] = m.getM()[0][0];
                 temp[0][1] = m.getM()[1][1];
                 temp[0][2] = m.getM()[2][2];
@@ -248,40 +261,88 @@ class Matrix {
         }
     }
 
-    public static void scalar(Matrix m){
-        if (m.mTypes.contains("Diagonal Matrix")){
-            if(m.getC() == 2){
-                if(m.getM()[0][0] == m.getM()[0][1]){
+    public static void scalar(Matrix m) {
+        if (m.mTypes.contains("Diagonal Matrix")) {
+            if (m.getC() == 2) {
+                if (m.getM()[0][0] == m.getM()[0][1]) {
 
                 }
-            }
-            else if(m.getC() == 3){
-                if((m.getM()[0][0] == m.getM()[0][1]) && (m.getM()[0][1] == m.getM()[0][1])){
+            } else if (m.getC() == 3) {
+                if ((m.getM()[0][0] == m.getM()[0][1]) && (m.getM()[0][1] == m.getM()[0][1])) {
                     m.mTypes.add("Scalar Matrix");
                 }
             }
         }
     }
 
-    public static void identity(Matrix m){
-        if(m.getC() == 1){
-            if(m.getM()[0][0] == 1){
+    public static void identity(Matrix m) {
+        if (m.getC() == 1) {
+            if (m.getM()[0][0] == 1) {
+                m.mTypes.add("Identity Matrix");
+            }
+        }
+        if (m.mTypes.contains("Scalar Matrix")) {
+            if (m.getC() == 2) {
+                if (m.getM()[0][0] == 1 & m.getM()[0][1] == 1) {
+                    m.mTypes.add("Identity Matrix");
+                }
+            } else if (m.getC() == 3) {
+                if (m.getM()[0][0] == 1 & m.getM()[0][1] == 1 && m.getM()[0][2] == 1) {
+                    m.mTypes.add("Identity Matrix");
+                }
+            }
+        }
 
+    }
+
+    public static void singleton(Matrix m) {
+        if (m.mTypes.contains("Square Matrix")) {
+            if (m.getC() == 1) {
+                m.mTypes.add("Singleton Matrix");
             }
         }
-        if (m.mTypes.contains("Scalar Matrix")){
-            if(m.getC() == 2){
-                if(m.getM()[0][0] == 1 & m.getM()[0][1] == 1){
-                    m.mTypes.add("Identity Matrix");
+    }
+
+    public static void ones(Matrix m) {
+        boolean check = true;
+        for (int i = 0; i < m.getR(); i++) {
+            for (int j = 0; j < m.getC(); j++) {
+                if (m.getM()[i][j] != 1) {
+                    check = false;
+                    break;
                 }
             }
-            else if(m.getC() == 3){
-                if(m.getM()[0][0] == 1 & m.getM()[0][1] == 1 && m.getM()[0][2] == 1){
-                    m.mTypes.add("Identity Matrix");
-                }
+            if (!check) {
+                break;
             }
         }
-        
+        if (check) {
+            m.mTypes.add("Ones Matrix");
+            int[][] temp = new int[1][1];
+            temp[0][0] = 1;
+            m.setM(temp);
+        }
+    }
+
+    public static void nullM(Matrix m) {
+        boolean check = true;
+        for (int i = 0; i < m.getR(); i++) {
+            for (int j = 0; j < m.getC(); j++) {
+                if (m.getM()[i][j] != 0) {
+                    check = false;
+                    break;
+                }
+            }
+            if (!check) {
+                break;
+            }
+        }
+        if (check) {
+            m.mTypes.add("Null Matrix");
+            int[][] temp = new int[1][1];
+            temp[0][0] = 0;
+            m.setM(temp);
+        }
     }
 
     public static void setType(Matrix m) {
@@ -296,15 +357,13 @@ class Matrix {
         Matrix.diagonal(m);
         Matrix.scalar(m);
         Matrix.identity(m);
-        // 13. Singleton Matrix
-        // 14. Ones Matrix
-        // 15. Null Matrix
+        Matrix.singleton(m);
+        Matrix.ones(m);
+        Matrix.nullM(m);
     }
 }
 
 public class AP_assignment3 {
-    // the zero matrices are the only matrix, which is both symmetric and
-    // skew-symmetric matrix.
     // symm and skew symm doesnt work.
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -373,13 +432,11 @@ public class AP_assignment3 {
                 }
                 int iD = s.nextInt();
                 if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
-                    if(matrices.get(iD).getC() == 1){
-                        System.out.println("Ans: "+matrices.get(iD).getM()[0][0]);
-                    }
-                    else if (matrices.get(iD).getC() == 2) {
+                    if (matrices.get(iD).getC() == 1) {
+                        System.out.println("Ans: " + matrices.get(iD).getM()[0][0]);
+                    } else if (matrices.get(iD).getC() == 2) {
                         System.out.println("Ans : " + Matrix.determinant2(matrices.get(iD)));
-                    }
-                    else if (matrices.get(iD).getC() == 3) {
+                    } else if (matrices.get(iD).getC() == 3) {
                         System.out.println("Ans : " + Matrix.determinant3(matrices.get(iD)));
                     }
                 } else {
