@@ -117,7 +117,8 @@ class Matrix {
     }
 
     public static Matrix Transpose(Matrix m) {
-        if(m.getMTypes().contains("Diagonal Matrix")||m.getMTypes().contains("Ones Matrix")||m.getMTypes().contains("Null Matrix")){
+        if (m.getMTypes().contains("Diagonal Matrix") || m.getMTypes().contains("Ones Matrix")
+                || m.getMTypes().contains("Null Matrix")) {
             Matrix T = m;
             return T;
         }
@@ -130,8 +131,32 @@ class Matrix {
         return T;
     }
 
+    public static void determinant(Matrix m) {
+        if (m.getMTypes().contains("Null Matrix")) {
+            System.out.println("Ans: " + 0);
+        } else if (m.getC() == m.getR()) {
+            if (m.getMTypes().contains("Diagonal Matrix")) {
+                System.out.println("Ans: " + Matrix.determinantDiag(m));
+            } else if (m.getMTypes().contains("Ones Matrix")) {
+                if (m.getC() >= 2) {
+                    System.out.println("Ans: " + 0);
+                } else {
+                    System.out.println("Ans: " + m.getM()[0][0]);
+                }
+            } else if (m.getC() == 1) {
+                System.out.println("Ans: " + m.getM()[0][0]);
+            } else if (m.getC() == 2) {
+                System.out.println("Ans : " + Matrix.determinant2(m));
+            } else if (m.getC() == 3) {
+                System.out.println("Ans : " + Matrix.determinant3(m));
+            }
+        } else {
+            System.out.println("Not a square Matrix");
+        }
+    }
+
     public static int determinant3(Matrix m) {
-        if(m.getMTypes().contains("Singular Matrix")){
+        if (m.getMTypes().contains("Singular Matrix")) {
             return 0;
         }
         int x, y, z;
@@ -152,7 +177,7 @@ class Matrix {
     }
 
     public static int determinant2(Matrix m) {
-        if(m.getMTypes().contains("Singular Matrix")){
+        if (m.getMTypes().contains("Singular Matrix")) {
             return 0;
         }
         int x, y;
@@ -160,6 +185,56 @@ class Matrix {
         y = (m.getM()[0][1] * m.getM()[1][0]);
 
         return (x - y);
+    }
+
+    public static void sumN(Matrix m, Matrix n) {
+        if (m.getR() != n.getR() || m.getC() != n.getC()) {
+            throw new RuntimeException("Illegal Matrix Dimentions");
+        } else {
+            Matrix temp = new Matrix(m.getR(), m.getC());
+            for (int i = 0; i < m.getR(); i++) {
+                for (int j = 0; j < m.getC(); j++) {
+                    temp.getM()[i][j] = m.getM()[i][j] + n.getM()[i][j];
+                }
+            }
+            System.out.println("Ans: ");
+            temp.printMatrix();
+        }
+    }
+
+    public static void diffN(Matrix m, Matrix n) {
+        if (m.getR() != n.getR() || m.getC() != n.getC()) {
+            throw new RuntimeException("Illegal Matrix Dimentions");
+        } else {
+            Matrix temp = new Matrix(m.getR(), m.getC());
+            for (int i = 0; i < m.getR(); i++) {
+                for (int j = 0; j < m.getC(); j++) {
+                    temp.getM()[i][j] = m.getM()[i][j] - n.getM()[i][j];
+                }
+            }
+            System.out.println("Ans: ");
+            temp.printMatrix();
+        }
+    }
+
+    public static void mullN(Matrix m, Matrix n) {
+        if (m.getC() != n.getR()) {
+            throw new RuntimeException("Illegal Matrix Dimentions");
+        } else {
+            Matrix temp = new Matrix(m.getR(), n.getC());
+            for (int i = 0; i < temp.getR(); i++) {
+                for (int j = 0; j < temp.getC(); j++) {
+                    temp.getM()[i][j] = 0;
+                }
+            }
+            for (int i = 0; i < temp.getR(); i++) {
+                for (int j = 0; j < temp.getC(); j++) {
+                    for (int k = 0; k < m.getC(); k++) {
+                        temp.getM()[i][j] += m.getM()[i][k] * n.getM()[k][j];
+                    }
+                }
+            }
+        }
     }
 
     public static void squareRec(Matrix m) {
@@ -208,7 +283,7 @@ class Matrix {
 
     public static void upperT(Matrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            if(!(m.getR() == 1 && m.getC() == 1)){
+            if (!(m.getR() == 1 && m.getC() == 1)) {
                 boolean check = true;
                 for (int i = 0; i < m.getR(); i++) {
                     for (int j = 0; j < m.getC(); j++) {
@@ -224,14 +299,13 @@ class Matrix {
                     m.mTypes.add("Upper Triangular Matrix");
                 }
             }
-            
 
         }
     }
 
     public static void lowerT(Matrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            if(!(m.getR() == 1 && m.getC() == 1)){
+            if (!(m.getR() == 1 && m.getC() == 1)) {
                 boolean check = true;
                 for (int i = 0; i < m.getR(); i++) {
                     for (int j = 0; j < m.getC(); j++) {
@@ -247,7 +321,6 @@ class Matrix {
                     m.mTypes.add("Lower Triangular Matrix");
                 }
             }
-            
 
         }
     }
@@ -329,7 +402,8 @@ class Matrix {
     }
 
     public static void ones(Matrix m) {
-        if(m.getR() == 1 && m.getC() == 1){}
+        if (m.getR() == 1 && m.getC() == 1) {
+        }
         boolean check = true;
         for (int i = 0; i < m.getR(); i++) {
             for (int j = 0; j < m.getC(); j++) {
@@ -343,16 +417,15 @@ class Matrix {
             }
         }
         if (check) {
-            if(m.getR() == 1 && m.getC() == 1){
+            if (m.getR() == 1 && m.getC() == 1) {
                 return;
-            }
-            else{
+            } else {
                 m.mTypes.add("Ones Matrix");
                 int[][] temp = new int[1][1];
                 temp[0][0] = 1;
                 m.setM(temp);
             }
-            
+
         }
     }
 
@@ -463,28 +536,7 @@ public class AP_assignment3 {
 
                 }
                 int iD = s.nextInt();
-                if (matrices.get(iD).getMTypes().contains("Null Matrix")) {
-                    System.out.println("Ans: " + 0);
-                }
-                else if (matrices.get(iD).getC() == matrices.get(iD).getR()) {
-                    if (matrices.get(iD).getMTypes().contains("Diagonal Matrix")) {
-                        System.out.println("Ans: " + Matrix.determinantDiag(matrices.get(iD)));
-                    } else if (matrices.get(iD).getMTypes().contains("Ones Matrix")) {
-                        if (matrices.get(iD).getC() >= 2) {
-                            System.out.println("Ans: " + 0);
-                        } else {
-                            System.out.println("Ans: " + matrices.get(iD).getM()[0][0]);
-                        }
-                    } else if (matrices.get(iD).getC() == 1) {
-                        System.out.println("Ans: " + matrices.get(iD).getM()[0][0]);
-                    } else if (matrices.get(iD).getC() == 2) {
-                        System.out.println("Ans : " + Matrix.determinant2(matrices.get(iD)));
-                    } else if (matrices.get(iD).getC() == 3) {
-                        System.out.println("Ans : " + Matrix.determinant3(matrices.get(iD)));
-                    }
-                } else {
-                    System.out.println("Not a square Matrix");
-                }
+                Matrix.determinant(matrices.get(iD));
 
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
@@ -506,4 +558,5 @@ public class AP_assignment3 {
         s.close();
 
     }
+
 }
