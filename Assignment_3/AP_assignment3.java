@@ -116,6 +116,15 @@ class Matrix {
 
     }
 
+    public static void printOT(int r,int c,int v){
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                System.out.print(v+" ");
+            }
+            System.out.println();
+        }
+    }
+
     public static Matrix Transpose(Matrix m) {
         if (m.getMTypes().contains("Diagonal Matrix") || m.getMTypes().contains("Ones Matrix")
                 || m.getMTypes().contains("Null Matrix")) {
@@ -187,51 +196,162 @@ class Matrix {
         return (x - y);
     }
 
-    public static void sumN(Matrix m, Matrix n) {
-        if (m.getR() != n.getR() || m.getC() != n.getC()) {
-            throw new RuntimeException("Illegal Matrix Dimentions");
-        } else {
-            Matrix temp = new Matrix(m.getR(), m.getC());
-            for (int i = 0; i < m.getR(); i++) {
-                for (int j = 0; j < m.getC(); j++) {
-                    temp.getM()[i][j] = m.getM()[i][j] + n.getM()[i][j];
-                }
-            }
-            System.out.println("Ans: ");
-            temp.printMatrix();
+    public static void sum(Matrix m, Matrix n) {
+        if(m.getC() != n.getC() || m.getR() != n.getR()){
+            throw new RuntimeException("Illegal matrix dimensions.");
         }
+        ArrayList<String> check = new ArrayList<>();
+        check.add("Diagonal Matrix");
+        check.add("Ones Matrix");
+        check.add("Null Matrix");
+        if (!(m.getMTypes().containsAll(check))) {
+            if(!n.getMTypes().containsAll(check)){
+                Matrix.sumN(m, n);
+            }
+        }
+        else if(m.getMTypes().contains("Null Matrix")){
+            if(n.getMTypes().contains("Null Matrix")){
+                Matrix.printOT(m.getR(), m.getC(), 0);
+            }
+            else if(n.getMTypes().contains("Diagonal Matrix")){
+                System.out.println("Ans");
+                n.printMatrix();
+            }
+            else{
+                n.printMatrix();
+            }
+        }
+        else if(m.getMTypes().contains("Ones Matrix")){
+            if(n.getMTypes().contains("Ones Matrix")){
+                Matrix.printOT(m.getR(), m.getC(), 1);
+            }
+            else if(n.getMTypes().contains("Diagonal Matrix")){
+                Matrix temp = Matrix.diagonalN(n);
+                for(int i=0;i<temp.getR();i++){
+                    for(int j=0;j<temp.getC();j++){
+                        temp.getM()[i][j]++;
+                    }
+                }
+                temp.printMatrix();
+            }
+            else{
+                Matrix temp = new Matrix(n.getR(), n.getC());
+                for(int i=0;i<temp.getR();i++){
+                    for(int j=0;j<temp.getC();j++){
+                        temp.getM()[i][j] = n.getM()[i][j] + 1;
+                    }
+                }
+                temp.printMatrix();
+            }
+        }
+    }
+
+    public static void diff(Matrix m, Matrix n) {
+        if(m.getC() != n.getC() || m.getR() != n.getR()){
+            throw new RuntimeException("Illegal matrix dimensions.");
+        }
+        ArrayList<String> check = new ArrayList<>();
+        check.add("Diagonal Matrix");
+        check.add("Ones Matrix");
+        check.add("Null Matrix");
+        if (!(m.getMTypes().containsAll(check))) {
+            if(!n.getMTypes().containsAll(check)){
+                Matrix.diffN(m, n);
+            }
+        }
+        else if(m.getMTypes().contains("Null Matrix")){
+            if(n.getMTypes().contains("Null Matrix")){
+                Matrix.printOT(m.getR(), m.getC(), 0);
+            }
+            else if(n.getMTypes().contains("Diagonal Matrix")){
+                System.out.println("Ans");
+                n.printMatrix();
+            }
+            else{
+                n.printMatrix();
+            }
+        }
+        else if(m.getMTypes().contains("Ones Matrix")){
+            if(n.getMTypes().contains("Ones Matrix")){
+                Matrix.printOT(m.getR(), m.getC(), 1);
+            }
+            else if(n.getMTypes().contains("Diagonal Matrix")){
+                Matrix temp = Matrix.diagonalN(n);
+                for(int i=0;i<temp.getR();i++){
+                    for(int j=0;j<temp.getC();j++){
+                        temp.getM()[i][j] = 1 - temp.getM()[i][j];
+                    }
+                }
+                temp.printMatrix();
+            }
+            else{
+                Matrix temp = new Matrix(n.getR(), n.getC());
+                for(int i=0;i<temp.getR();i++){
+                    for(int j=0;j<temp.getC();j++){
+                        temp.getM()[i][j] = 1 - n.getM()[i][j] ;
+                    }
+                }
+                temp.printMatrix();
+            }
+        }
+    }
+    public static void mull(Matrix m, Matrix n) {
+        if (m.getC() != n.getR()) {
+            throw new RuntimeException("Illegal Matrix Dimentions");
+        }
+        ArrayList<String> check = new ArrayList<>();
+        check.add("Diagonal Matrix");
+        check.add("Ones Matrix");
+        check.add("Null Matrix");
+        if (!(m.getMTypes().containsAll(check))) {
+            if(!n.getMTypes().containsAll(check)){
+                Matrix.mullN(m, n);
+            }
+        }
+        else if(m.getMTypes().contains("Null Matrix")||n.getMTypes().contains("Null Matrix")){
+            Matrix.printOT(m.getR(), m.getC(), 0);
+        }
+        else if(m.getMTypes().contains("Ones Matrix")){
+            n.printMatrix();
+        }
+        else if(n.getMTypes().contains("Ones Matrix")){
+            m.printMatrix();
+        }
+    }
+
+    public static void sumN(Matrix m, Matrix n) {
+        Matrix temp = new Matrix(m.getR(), m.getC());
+        for (int i = 0; i < m.getR(); i++) {
+            for (int j = 0; j < m.getC(); j++) {
+                temp.getM()[i][j] = m.getM()[i][j] + n.getM()[i][j];
+            }
+        }
+        System.out.println("Ans: ");
+        temp.printMatrix();
     }
 
     public static void diffN(Matrix m, Matrix n) {
-        if (m.getR() != n.getR() || m.getC() != n.getC()) {
-            throw new RuntimeException("Illegal Matrix Dimentions");
-        } else {
-            Matrix temp = new Matrix(m.getR(), m.getC());
-            for (int i = 0; i < m.getR(); i++) {
-                for (int j = 0; j < m.getC(); j++) {
-                    temp.getM()[i][j] = m.getM()[i][j] - n.getM()[i][j];
-                }
+        Matrix temp = new Matrix(m.getR(), m.getC());
+        for (int i = 0; i < m.getR(); i++) {
+            for (int j = 0; j < m.getC(); j++) {
+                temp.getM()[i][j] = m.getM()[i][j] - n.getM()[i][j];
             }
-            System.out.println("Ans: ");
-            temp.printMatrix();
         }
+        System.out.println("Ans: ");
+        temp.printMatrix();
     }
 
     public static void mullN(Matrix m, Matrix n) {
-        if (m.getC() != n.getR()) {
-            throw new RuntimeException("Illegal Matrix Dimentions");
-        } else {
-            Matrix temp = new Matrix(m.getR(), n.getC());
-            for (int i = 0; i < temp.getR(); i++) {
-                for (int j = 0; j < temp.getC(); j++) {
-                    temp.getM()[i][j] = 0;
-                }
+        Matrix temp = new Matrix(m.getR(), n.getC());
+        for (int i = 0; i < temp.getR(); i++) {
+            for (int j = 0; j < temp.getC(); j++) {
+                temp.getM()[i][j] = 0;
             }
-            for (int i = 0; i < temp.getR(); i++) {
-                for (int j = 0; j < temp.getC(); j++) {
-                    for (int k = 0; k < m.getC(); k++) {
-                        temp.getM()[i][j] += m.getM()[i][k] * n.getM()[k][j];
-                    }
+        }
+        for (int i = 0; i < temp.getR(); i++) {
+            for (int j = 0; j < temp.getC(); j++) {
+                for (int k = 0; k < m.getC(); k++) {
+                    temp.getM()[i][j] += m.getM()[i][k] * n.getM()[k][j];
                 }
             }
         }
@@ -357,6 +477,24 @@ class Matrix {
 
             m.setM(temp);
         }
+    }
+
+    public static Matrix diagonalN(Matrix m) {
+        Matrix temp = new Matrix(m.getR(), m.getC());
+        int x = m.getC();
+        int a = 0;
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < x; j++) {
+                if (i == j) {
+                    temp.getM()[i][j] = m.getM()[0][a];
+                    a++;
+                } else {
+                    temp.getM()[i][j] = 0;
+                }
+            }
+        }
+        return temp;
+
     }
 
     public static void scalar(Matrix m) {
