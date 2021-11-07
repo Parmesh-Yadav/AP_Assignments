@@ -25,10 +25,10 @@ abstract class gMatrix {
         }
     }
 
-    public static void printArr(float[][] m) {
+    public static void printArr(double[][] m) {
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
-                System.out.println(m[i][j] + " ");
+                System.out.print(m[i][j] + " ");
             }
             System.out.println();
         }
@@ -74,8 +74,8 @@ abstract class gMatrix {
         return temp;
     }
 
-    public static float[][] mullM(int[][] m, float[][] n) {
-        float[][] temp = new float[m.length][n[0].length];
+    public static double[][] mullM(int[][] m, double[][] n) {
+        double[][] temp = new double[m.length][n[0].length];
         for (int i = 9; i < temp.length; i++) {
             for (int j = 0; j < temp[0].length; j++) {
                 temp[i][j] = 0;
@@ -84,7 +84,7 @@ abstract class gMatrix {
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[0].length; j++) {
                 for (int k = 0; k < m[0].length; k++) {
-                    temp[i][j] += (float)m[i][k] * n[k][j];
+                    temp[i][j] += (double) m[i][k] * n[k][j];
                 }
             }
         }
@@ -92,65 +92,46 @@ abstract class gMatrix {
         return temp;
     }
 
-    public static int deter(int[][] m, int n) {
-        int d = 0;
-        if (m.length == 1) {
-            return m[0][0];
+    public static double[][] inverseM(int[][] m,int d) {
+        double[][] inverse = new double[m.length][m.length];
+        if(m.length == 3){
+            inverse = gMatrix.inverseM3(m, d);
         }
-        int[][] t = new int[m.length][m.length];
-        int s = 1;
-        for (int i = 0; i < m.length; i++) {
-            gMatrix.coFactorE(m, t, 0, i, n);
-            d += s * m[0][i] * gMatrix.deter(t, n - 1);
-            s = -s;
+        else if(m.length == 2){
+            inverse = gMatrix.inverseM2(m, d);
         }
-        return d;
-    }
+        else{
+            inverse = gMatrix.inverseM1(m, d);
+        }
+        return inverse;
+    }    
 
-    public static void coFactorE(int[][] m, int[][] t, int q, int r, int n) {
-        int a = 0;
-        int b = 0;
-        for (int i = 0; i < m.length; i++) {
-            for (int j = 0; j < m.length; j++) {
-                if (i != q && j != r) {
-                    t[a][b++] = m[i][j];
-                    if (b == n - 1) {
-                        b = 0;
-                        a++;
-                    }
-                }
+    public static double[][] inverseM3(int[][] m, int d) {
+        double[][] inverse = new double[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                inverse[i][j] = ((m[(i + 1) % 3][(j + 1) % 3] * m[(i + 2) % 3][(j + 2) % 3])
+                        - (m[(i + 1) % 3][(j + 2) % 3] * m[(i + 2) % 3][(j + 1) % 3])) / (double) d;
             }
         }
-    }
-
-    public static void adjointM(int[][] m, int[][] adjoint) {
-        if (m.length == 1) {
-            adjoint[0][0] = 1;
-            return;
-        }
-        int s = 1;
-        int[][] t = new int[m.length][m.length];
-        for (int i = 0; i < m.length; i++) {
-            for (int j = 0; j < m.length; j++) {
-                gMatrix.coFactorE(m, t, i, j, m.length);
-                s = ((i + j) % 2 == 0) ? 1 : -1;
-                adjoint[i][j] = (s) * (gMatrix.deter(t, m.length - 1));
-            }
-        }
-    }
-
-    public static float[][] inverseM(int[][] m, int determinant) {
-        float[][] inverse = new float[m.length][m.length];
-        int[][] adjoint = new int[m.length][m.length];
-        gMatrix.adjointM(m, adjoint);
-        for (int i = 0; i < m.length; i++) {
-            for (int j = 0; j < m.length; j++) {
-                inverse[i][j] = adjoint[i][j] / (float) determinant;
-            }
-        }
-
         return inverse;
     }
+
+    public static double[][] inverseM2(int[][] m,int d) {
+        double[][] inverse = new double[2][2];
+        inverse[0][0] = (m[1][1])/(double)d;
+        inverse[1][1] = (m[0][0])/(double)d;
+        inverse[0][1] = -(m[0][1])/(double)d;
+        inverse[1][0] = -(m[1][0])/(double)d;
+        return inverse;
+    }
+
+    public static double[][] inverseM1(int[][] m,int d) {
+        double[][] inverse = new double[1][1];
+        inverse[0][0] = 1/(double)m[0][0];
+        return inverse;
+    }
+
 
 }
 
@@ -213,8 +194,19 @@ class Cmatrix extends gMatrix {
 
     }
 
-    public int[][] getTraspose(int[][] m) {
+    public static int[][] getTraspose(int[][] m) {
         int[][] temp = new int[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                temp[j][i] = m[i][j];
+            }
+        }
+        return temp;
+
+    }
+
+    public static double[][] getTraspose(double[][] m) {
+        double[][] temp = new double[m.length][m[0].length];
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
                 temp[j][i] = m[i][j];
@@ -263,7 +255,7 @@ class Cmatrix extends gMatrix {
 
     public static void symmetrix(Cmatrix m) {
         if (m.mTypes.contains("Square Matrix")) {
-            if (Arrays.deepEquals(m.getM(), m.getTraspose(m.getM()))) {
+            if (Arrays.deepEquals(m.getM(), Cmatrix.getTraspose(m.getM()))) {
                 m.mTypes.add("Symmetrix Matrix");
             }
         }
@@ -277,7 +269,7 @@ class Cmatrix extends gMatrix {
                     temp[i][j] = -m.getM()[i][j];
                 }
             }
-            if (Arrays.deepEquals(temp, m.getTraspose(m.getM()))) {
+            if (Arrays.deepEquals(temp, Cmatrix.getTraspose(m.getM()))) {
                 m.mTypes.add("Skew-Symmetrix Matrix");
             }
         }
@@ -916,10 +908,16 @@ public class AP_A3 {
                     break;
                 case 4:// division AB-1
                     if (matrices.get(first).getArr()[0].length == matrices.get(second).getArr().length) {
-                        float[][] mull = gMatrix.mullM(matrices.get(first).getArr(),
+                        if(matrices.get(second).GetDeterminant() != 0){
+                            double[][] divd = gMatrix.mullM(matrices.get(first).getArr(),
                                 gMatrix.inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant()));
-                        System.out.println("Ans: ");
-                        gMatrix.printArr(mull);
+                            System.out.println("Ans: ");
+                            gMatrix.printArr(divd);
+                        }
+                        else{
+                            System.out.println("Matrix no invertible.");
+                        }
+                        
                     } else {
                         System.out.println("Matrices not Compatible.");
                     }
@@ -940,11 +938,20 @@ public class AP_A3 {
                 int inv = s.nextInt();
                 int[][] i = matrices.get(inv).getArr();
                 if (i.length == i[0].length) {
-                    float[][] invM = gMatrix.inverseM(i, matrices.get(inv).GetDeterminant());
-                    System.out.println("Ans: ");
-                    gMatrix.printArr(invM);
+                    if(matrices.get(inv).GetDeterminant() != 0){
+                        double[][] invM = gMatrix.inverseM(i, matrices.get(inv).GetDeterminant());
+                        System.out.println("Ans: ");
+                        if(invM.length == 3){
+                            invM = Cmatrix.getTraspose(invM);
+                        }
+                        gMatrix.printArr(invM);
+                    }
+                    else{
+                        System.out.println("Matrix not invertible as determinant is zero.");
+                    }
+                    
                 } else {
-                    System.out.println("Matrix not compatible.");
+                    System.out.println("Matrix not a square matrix.");
                 }
                 break;
             case 9:// Compute means: row-wise mean, column-wise mean, mean of all the elements.
