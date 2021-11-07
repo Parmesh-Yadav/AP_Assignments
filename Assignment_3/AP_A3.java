@@ -1036,6 +1036,16 @@ public class AP_A3 {
             case 11:// Use singleton matrices as scalars, if requested.
                 break;
             case 12:// Compute A+AT for a matrix A.
+                System.out.println("Choose a matrix: ");
+                printMatrices(matrices);
+                int ID = s.nextInt();
+                if(matrices.get(ID).getMTypes().contains("Square Matrix")){
+                    int[][] Sum = gMatrix.sumM(matrices.get(ID).getArr(), matrices.get(ID).GetTraspose());
+                    gMatrix.printArr(Sum);
+                }
+                else{
+                    System.out.println("Incompatible Matrix");
+                }
                 break;
             case 13:// Compute Eigen vectors and values.
                 break;
