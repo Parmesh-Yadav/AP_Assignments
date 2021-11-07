@@ -14,6 +14,124 @@ abstract class gMatrix {
 
     abstract int GetDeterminant();
 
+    public static void printArr(int[][] m) {
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                System.out.println(m[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void printArr(float[][] m) {
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                System.out.println(m[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static int[][] sumM(int[][] m, int[][] n) {// assuming order of both arrays are same...
+        int[][] temp = new int[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                temp[i][j] = m[i][j] + n[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public static int[][] diffM(int[][] m, int[][] n) {// assuming order of both arrays are same...
+        int[][] temp = new int[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                temp[i][j] = m[i][j] - n[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public static int[][] mullM(int[][] m, int[][] n) {
+        int[][] temp = new int[m.length][n[0].length];
+        for (int i = 9; i < temp.length; i++) {
+            for (int j = 0; j < temp[0].length; j++) {
+                temp[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[0].length; j++) {
+                for (int k = 0; k < m[0].length; k++) {
+                    temp[i][j] += m[i][k] * n[k][j];
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    public static int deter(int[][] m, int n) {
+        int d = 0;
+        if (m.length == 1) {
+            return m[0][0];
+        }
+        int[][] t = new int[m.length][m.length];
+        int s = 1;
+        for (int i = 0; i < m.length; i++) {
+            gMatrix.coFactorE(m, t, 0, i, n);
+            d += s * m[0][i] * gMatrix.deter(t, n - 1);
+            s = -s;
+        }
+        return d;
+    }
+
+    public static void coFactorE(int[][] m, int[][] t, int q, int r, int n) {
+        int a = 0;
+        int b = 0;
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                if (i != q && j != r) {
+                    t[a][b++] = m[i][j];
+                    if (b == n - 1) {
+                        b = 0;
+                        a++;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void adjointM(int[][] m, int[][] adjoint) {
+        if (m.length == 1) {
+            adjoint[0][0] = 1;
+            return;
+        }
+        int s = 1;
+        int[][] t = new int[m.length][m.length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                gMatrix.coFactorE(m, t, i, j, m.length);
+                s = ((i + j) % 2 == 0) ? 1 : -1;
+                adjoint[i][j] = (s) * (gMatrix.deter(t, m.length - 1));
+            }
+        }
+    }
+
+    public static float[][] inverseM(int[][] m, int determinant) {
+        float[][] inverse = new float[m.length][m.length];
+        int[][] adjoint = new int[m.length][m.length];
+        gMatrix.adjointM(m, adjoint);
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                inverse[i][j] = adjoint[i][j] / (float) determinant;
+            }
+        }
+
+        return inverse;
+    }
+
 }
 
 class Cmatrix extends gMatrix {
@@ -75,7 +193,6 @@ class Cmatrix extends gMatrix {
 
     }
 
-    
     public int[][] getTraspose(int[][] m) {
         int[][] temp = new int[m.length][m[0].length];
         for (int i = 0; i < m.length; i++) {
@@ -87,7 +204,6 @@ class Cmatrix extends gMatrix {
 
     }
 
-    
     public int getDeterminant(int[][] m) {
         if (m[0].length == 3) {
             int x, y, z;
@@ -361,7 +477,7 @@ class Nmatrix extends gMatrix {
         this.M = new int[R][C];
     }
 
-    public Nmatrix(int[][] m,ArrayList<String> mtypes) {// normal matrix constructor
+    public Nmatrix(int[][] m, ArrayList<String> mtypes) {// normal matrix constructor
         this.R = m.length;
         this.C = m[0].length;
         this.O = this.R * this.C;
@@ -400,7 +516,7 @@ class Nmatrix extends gMatrix {
                 temp[j][i] = m[i][j];
             }
         }
-        System.out.println(Arrays.deepToString(temp));
+        gMatrix.printArr(temp);
         return temp;
     }
 
@@ -460,7 +576,7 @@ class Dmatrix extends gMatrix {
         this.mTypes = mTypes;
     }
 
-    public Dmatrix(int[][] m,ArrayList<String> mtypes) {// normal matrix constructor
+    public Dmatrix(int[][] m, ArrayList<String> mtypes) {// normal matrix constructor
         this.R = m.length;
         this.C = m[0].length;
         this.O = this.R * this.C;
@@ -562,7 +678,7 @@ class ONmatrix extends gMatrix {
         this.mTypes = mTypes;
     }
 
-    public ONmatrix(int[][] m,ArrayList<String> mtypes) {// normal matrix constructor
+    public ONmatrix(int[][] m, ArrayList<String> mtypes) {// normal matrix constructor
         this.R = m.length;
         this.C = m[0].length;
         this.O = this.R * this.C;
@@ -622,6 +738,7 @@ public class AP_A3 {
         char choice = 'y';
         while (choice == 'y') {
             // System.out.println("Which type of matrix would you like to create?");
+            instrMenu();
             int tm = s.nextInt();
             switch (tm) {
             case 1:// Take matrices as input and label them with appropriate matrix-types
@@ -638,21 +755,53 @@ public class AP_A3 {
                 Cmatrix n = new Cmatrix(m);
                 Cmatrix.setType(n);
                 if (n.getMTypes().contains("Diagonal Matrix") && n.getMTypes().contains("Null Matrix")) {
-                    matrices.add(new ONmatrix(m,n.getMTypes()));
+                    matrices.add(new ONmatrix(m, n.getMTypes()));
                 } else if (n.getMTypes().contains("Diagonal Matrix")) {
-                    matrices.add(new Dmatrix(m,n.getMTypes()));
+                    matrices.add(new Dmatrix(m, n.getMTypes()));
                 } else if (n.getMTypes().contains("Ones Matrix") || n.getMTypes().contains("Null Matrix")) {
-                    matrices.add(new ONmatrix(m,n.getMTypes()));
+                    matrices.add(new ONmatrix(m, n.getMTypes()));
                 } else {
-                    matrices.add(new Nmatrix(m,n.getMTypes()));
+                    matrices.add(new Nmatrix(m, n.getMTypes()));
                 }
 
                 break;
-            case 2:// Create matrices of requested matrix-types and label them with appropriate
-                   // matrix-types.
+            case 2:// Create matrices of requested matrix-types and label them with appropriate matrix-types.
+                typeOfMMenu();
+                int o = s.nextInt();
+                switch(o){
+                    case 1://Rectangular Matrix
+                        break;
+                    case 2://Row Matrix
+                        break;
+                    case 3://Column Matrix
+                        break;
+                    case 4://Square Matrix
+                        break;
+                    case 5://Symmetric Matrix
+                        break;
+                    case 6://Skew Symmetric Matrix
+                        break;
+                    case 7://Upper Triangular Matrix
+                        break;
+                    case 8://Lower Triangular Matrix
+                        break;
+                    case 9://Singular Matrix
+                        break;
+                    case 10://Diagonal Matrix
+                        break;
+                    case 11://Scalar Matrix
+                        break;
+                    case 12://Identity Matrix
+                        break;
+                    case 13://Singleton Matrix
+                        break;
+                    case 14://Ones Matrix
+                        break;
+                    case 15://Null Matrix
+                        break;
+                }
                 break;
-            case 3:// Change the elements of a matrix as long as the fixed matrix-type labels
-                   // remain valid
+            case 3:// Change the elements of a matrix as long as the fixed matrix-type labels remain valid
                 break;
             case 4:// Display all the matrix-type labels of a requested matrix.
                 System.out.println("Choose a matrix: ");
@@ -661,6 +810,18 @@ public class AP_A3 {
                 matrices.get(Id).PrintTypes();
                 break;
             case 5:// Perform addition, subtraction, multiplication & division.
+                addSubMulDivmenu();
+                int C =s.nextInt();
+                switch (C) {
+                    case 1://addition
+                        break;
+                    case 2://subtraction
+                        break;
+                    case 3://multiplication
+                        break;
+                    case 4://division
+                        break;
+                }
                 break;
             case 6:// Perform element-wise operations
                 break;
@@ -678,8 +839,8 @@ public class AP_A3 {
                 System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
                 int iD = s.nextInt();
-                System.out.println("Ans: "+matrices.get(iD).GetDeterminant());
-                
+                System.out.println("Ans: " + matrices.get(iD).GetDeterminant());
+
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
                 break;
@@ -689,8 +850,7 @@ public class AP_A3 {
                 break;
             case 14:// Solve sets of linear equations using matrices.
                 break;
-            case 15:// Retrieve all the existing matrices (entered or created) having requested
-                    // matrix-type labels.
+            case 15:// Retrieve all the existing matrices (entered or created) having requested matrix-type labels.
                 break;
             case 16:
                 choice = 'n';
@@ -708,6 +868,7 @@ public class AP_A3 {
     }
 
     public static void instrMenu() {
+        System.out.println("Choose an option>>");
         System.out.println("1. Take Matrix as Input");
         System.out.println("2. Create Matrix of Requested Type");
         System.out.println("3. Change elements in a Matrix");
@@ -724,5 +885,32 @@ public class AP_A3 {
         System.out.println("14. Solve Linear Equations");
         System.out.println("15. Get all matrices of a requested type");
         System.out.println("16. Exit");
+    }
+
+    public static void addSubMulDivmenu() {
+        System.out.println("Choose an option>>");
+        System.out.println("1. Addition");
+        System.out.println("2. Subtraction");
+        System.out.println("3. Multiplication");
+        System.out.println("4. Division");
+    }
+
+    public static void typeOfMMenu(){
+        System.out.println("Choose an option>>");
+        System.out.println("1. Rectangular Matrix");
+        System.out.println("2. Row Matrix");
+        System.out.println("3. Column Matrix");
+        System.out.println("4. Square Matrix");
+        System.out.println("5. Symmetric Matrix");
+        System.out.println("6. Skew Symmetric Matrix");
+        System.out.println("7. Upper Triangular Matrix");
+        System.out.println("8. Lower Triangular Matrix");
+        System.out.println("9. Singular Matrix");
+        System.out.println("10. Diagonal Matrix");
+        System.out.println("11. Scalar Matrix");
+        System.out.println("12. Identity Matrix");
+        System.out.println("13. Singleton Matrix");
+        System.out.println("14. Ones Matrix");
+        System.out.println("15. Null Matrix");
     }
 }
