@@ -336,11 +336,11 @@ class Cmatrix extends gMatrix {
     public static void scalar(Cmatrix m) {
         if (m.mTypes.contains("Diagonal Matrix")) {
             if (m.getC() == 2) {
-                if (m.getM()[0][0] == m.getM()[0][1]) {
-
+                if (m.getM()[0][0] == m.getM()[1][1]) {
+                    m.mTypes.add("Scalar Matrix");
                 }
             } else if (m.getC() == 3) {
-                if ((m.getM()[0][0] == m.getM()[0][1]) && (m.getM()[0][1] == m.getM()[0][1])) {
+                if ((m.getM()[0][0] == m.getM()[1][1]) && (m.getM()[1][1] == m.getM()[2][2])) {
                     m.mTypes.add("Scalar Matrix");
                 }
             }
@@ -355,11 +355,11 @@ class Cmatrix extends gMatrix {
         }
         if (m.mTypes.contains("Scalar Matrix")) {
             if (m.getC() == 2) {
-                if (m.getM()[0][0] == 1 & m.getM()[0][1] == 1) {
+                if (m.getM()[0][0] == 1 & m.getM()[1][1] == 1) {
                     m.mTypes.add("Identity Matrix");
                 }
             } else if (m.getC() == 3) {
-                if (m.getM()[0][0] == 1 & m.getM()[0][1] == 1 && m.getM()[0][2] == 1) {
+                if (m.getM()[0][0] == 1 & m.getM()[1][1] == 1 && m.getM()[2][2] == 1) {
                     m.mTypes.add("Identity Matrix");
                 }
             }
@@ -528,7 +528,7 @@ class Nmatrix extends gMatrix {
     @Override
     public int[][] GetTraspose() {
         int[][] m = this.getM();
-        int[][] temp = new int[m.length][m[0].length];
+        int[][] temp = new int[m[0].length][m.length];
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
                 temp[j][i] = m[i][j];
@@ -816,40 +816,99 @@ public class AP_A3 {
                 }
 
                 break;
-            case 2:// Create matrices of requested matrix-types and label them with appropriate
-                   // matrix-types.
+            case 2:// Create matrices of requested matrix-types and label them with appropriate matrix-types.
                 typeOfMMenu();
                 int o = s.nextInt();
                 switch (o) {
                 case 1:// Rectangular Matrix
+                    int[][] m1 = {{1,2,3},{3,4,5}};
+                    Cmatrix n1 = new Cmatrix(m1);
+                    Cmatrix.setType(n1);
+                    matrices.add(new Nmatrix(m1, n1.getMTypes()));
                     break;
                 case 2:// Row Matrix
+                    int[][] m2 = {{1,2}};
+                    Cmatrix n2 = new Cmatrix(m2);
+                    Cmatrix.setType(n2);
+                    matrices.add(new Nmatrix(m2, n2.getMTypes()));
                     break;
                 case 3:// Column Matrix
+                    int[][] m3 = {{1},{4}};
+                    Cmatrix n3 = new Cmatrix(m3);
+                    Cmatrix.setType(n3);
+                    matrices.add(new Nmatrix(m3, n3.getMTypes()));
                     break;
                 case 4:// Square Matrix
+                    int[][] m4 = {{1,2},{3,4}};
+                    Cmatrix n4 = new Cmatrix(m4);
+                    Cmatrix.setType(n4);
+                    matrices.add(new Nmatrix(m4, n4.getMTypes()));
                     break;
                 case 5:// Symmetric Matrix
+                    int[][] m5 = {{1,1,-1},{1,2,0},{-1,0,5}};
+                    Cmatrix n5 = new Cmatrix(m5);
+                    Cmatrix.setType(n5);
+                    matrices.add(new Nmatrix(m5, n5.getMTypes()));
                     break;
                 case 6:// Skew Symmetric Matrix
+                    int[][] m6 = {{0,1,-2},{-1,0,3},{2,-3,0}};
+                    Cmatrix n6 = new Cmatrix(m6);
+                    Cmatrix.setType(n6);
+                    matrices.add(new Nmatrix(m6, n6.getMTypes()));
                     break;
                 case 7:// Upper Triangular Matrix
+                    int[][] m7 = {{1,2,3},{0,3,4},{0,0,6}};
+                    Cmatrix n7 = new Cmatrix(m7);
+                    Cmatrix.setType(n7);
+                    matrices.add(new Nmatrix(m7, n7.getMTypes()));
                     break;
                 case 8:// Lower Triangular Matrix
+                    int[][] m8 = {{1,0,0},{3,4,0},{1,2,3}};
+                    Cmatrix n8 = new Cmatrix(m8);
+                    Cmatrix.setType(n8);
+                    matrices.add(new Nmatrix(m8, n8.getMTypes()));
                     break;
                 case 9:// Singular Matrix
+                    int[][] m9 = {{1,2,3},{4,5,6},{7,8,9}};
+                    Cmatrix n9 = new Cmatrix(m9);
+                    Cmatrix.setType(n9);
+                    matrices.add(new Nmatrix(m9, n9.getMTypes()));
                     break;
                 case 10:// Diagonal Matrix
+                    int[][] m10 = {{1,0,0},{0,2,0},{0,0,3}};
+                    Cmatrix n10 = new Cmatrix(m10);
+                    Cmatrix.setType(n10);
+                    matrices.add(new Dmatrix(m10, n10.getMTypes()));
                     break;
                 case 11:// Scalar Matrix
+                    int[][] m11 = {{2,0,0},{0,2,0},{0,0,2}};
+                    Cmatrix n11 = new Cmatrix(m11);
+                    Cmatrix.setType(n11);
+                    matrices.add(new Dmatrix(m11, n11.getMTypes()));
                     break;
                 case 12:// Identity Matrix
+                    int[][] m12 = {{1,0,0},{0,1,0},{0,0,1}};
+                    Cmatrix n12 = new Cmatrix(m12);
+                    Cmatrix.setType(n12);
+                    matrices.add(new Dmatrix(m12, n12.getMTypes()));
                     break;
                 case 13:// Singleton Matrix
+                    int[][] m13 = {{2}};
+                    Cmatrix n13 = new Cmatrix(m13);
+                    Cmatrix.setType(n13);
+                    matrices.add(new Nmatrix(m13, n13.getMTypes()));
                     break;
                 case 14:// Ones Matrix
+                    int[][] m14 = {{1,1},{1,1}};
+                    Cmatrix n14 = new Cmatrix(m14);
+                    Cmatrix.setType(n14);
+                    matrices.add(new ONmatrix(m14, n14.getMTypes()));
                     break;
                 case 15:// Null Matrix
+                    int[][] m15 = {{0,0},{0,0}};
+                    Cmatrix n15 = new Cmatrix(m15);
+                    Cmatrix.setType(n15);
+                    matrices.add(new ONmatrix(m15, n15.getMTypes()));
                     break;
                 }
                 break;
