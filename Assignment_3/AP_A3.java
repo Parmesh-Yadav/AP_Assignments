@@ -10,9 +10,9 @@ abstract class gMatrix {
 
     abstract void PrintTypes();
 
-    abstract int[][] getTraspose(int[][] m);
+    abstract int[][] GetTraspose();
 
-    abstract int getDeterminant(int[][] m);
+    abstract int GetDeterminant();
 
 }
 
@@ -75,7 +75,7 @@ class Cmatrix extends gMatrix {
 
     }
 
-    @Override
+    
     public int[][] getTraspose(int[][] m) {
         int[][] temp = new int[m.length][m[0].length];
         for (int i = 0; i < m.length; i++) {
@@ -87,7 +87,7 @@ class Cmatrix extends gMatrix {
 
     }
 
-    @Override
+    
     public int getDeterminant(int[][] m) {
         if (m[0].length == 3) {
             int x, y, z;
@@ -305,6 +305,18 @@ class Cmatrix extends gMatrix {
         Cmatrix.nullM(m);
     }
 
+    @Override
+    int GetDeterminant() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    int[][] GetTraspose() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
 
 class Nmatrix extends gMatrix {
@@ -380,31 +392,33 @@ class Nmatrix extends gMatrix {
     }
 
     @Override
-    public int[][] getTraspose(int[][] m) {
+    public int[][] GetTraspose() {
+        int[][] m = this.getM();
         int[][] temp = new int[m.length][m[0].length];
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
                 temp[j][i] = m[i][j];
             }
         }
+        System.out.println(Arrays.deepToString(temp));
         return temp;
     }
 
     @Override
-    public int getDeterminant(int[][] m) {
-        if (m[0].length == 3) {
+    public int GetDeterminant() {
+        if (this.getC() == 3) {
             int x, y, z;
-            x = (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]));
-            y = (m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]));
-            z = (m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]));
+            x = (this.getM()[0][0] * (this.getM()[1][1] * this.getM()[2][2] - this.getM()[1][2] * this.getM()[2][1]));
+            y = (this.getM()[0][1] * (this.getM()[1][0] * this.getM()[2][2] - this.getM()[1][2] * this.getM()[2][0]));
+            z = (this.getM()[0][2] * (this.getM()[1][0] * this.getM()[2][1] - this.getM()[1][1] * this.getM()[2][0]));
             return (x - y + z);
-        } else if (m[0].length == 2) {
+        } else if (this.getC() == 2) {
             int x, y;
-            x = (m[0][0] * m[1][1]);
-            y = (m[0][1] * m[1][0]);
+            x = (this.getM()[0][0] * this.getM()[1][1]);
+            y = (this.getM()[0][1] * this.getM()[1][0]);
             return (x - y);
         } else {
-            return m[0][0];
+            return this.getM()[0][0];
         }
 
     }
@@ -490,17 +504,18 @@ class Dmatrix extends gMatrix {
     }
 
     @Override
-    public int[][] getTraspose(int[][] m) {
-        return m;
+    public int[][] GetTraspose() {
+        this.Printm();
+        return this.getM();
 
     }
 
     @Override
-    public int getDeterminant(int[][] m) {
+    public int GetDeterminant() {
         int ans = 1;
         int i = 0;
-        for (int j = 0; j < m[0].length; j++) {
-            ans = ans * m[i][j];
+        for (int j = 0; j < this.getC(); j++) {
+            ans = ans * this.getM()[i][j];
         }
         return ans;
 
@@ -584,13 +599,14 @@ class ONmatrix extends gMatrix {
     }
 
     @Override
-    public int[][] getTraspose(int[][] m) {
-        return m;
+    public int[][] GetTraspose() {
+        this.Printm();
+        return this.getM();
 
     }
 
     @Override
-    public int getDeterminant(int[][] m) {
+    public int GetDeterminant() {
         return 0;
 
     }
@@ -649,14 +665,21 @@ public class AP_A3 {
             case 6:// Perform element-wise operations
                 break;
             case 7:// Transpose matrices
-
+                System.out.println("Choose a matrix: ");
+                printMatrices(matrices);
+                int id = s.nextInt();
+                matrices.get(id).GetTraspose();
                 break;
             case 8:// Inverse matrices.
                 break;
             case 9:// Compute means: row-wise mean, column-wise mean, mean of all the elements.
                 break;
             case 10:// Compute determinants
+                System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
+                int iD = s.nextInt();
+                System.out.println("Ans: "+matrices.get(iD).GetDeterminant());
+                
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
                 break;
