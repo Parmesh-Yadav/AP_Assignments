@@ -16,6 +16,17 @@ abstract class gMatrix {
 
     abstract int[][] getArr();
 
+    abstract ArrayList<String> getMTypes();
+
+    public static void getMofTypes(ArrayList<gMatrix> matrices, String s) {
+        for (gMatrix m : matrices) {
+            if (m.getMTypes().contains(s)) {
+                m.Printm();
+                System.out.println();
+            }
+        }
+    }
+
     public static void printArr(int[][] m) {
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
@@ -92,19 +103,17 @@ abstract class gMatrix {
         return temp;
     }
 
-    public static double[][] inverseM(int[][] m,int d) {
+    public static double[][] inverseM(int[][] m, int d) {
         double[][] inverse = new double[m.length][m.length];
-        if(m.length == 3){
+        if (m.length == 3) {
             inverse = gMatrix.inverseM3(m, d);
-        }
-        else if(m.length == 2){
+        } else if (m.length == 2) {
             inverse = gMatrix.inverseM2(m, d);
-        }
-        else{
+        } else {
             inverse = gMatrix.inverseM1(m, d);
         }
         return inverse;
-    }    
+    }
 
     public static double[][] inverseM3(int[][] m, int d) {
         double[][] inverse = new double[3][3];
@@ -117,21 +126,20 @@ abstract class gMatrix {
         return inverse;
     }
 
-    public static double[][] inverseM2(int[][] m,int d) {
+    public static double[][] inverseM2(int[][] m, int d) {
         double[][] inverse = new double[2][2];
-        inverse[0][0] = (m[1][1])/(double)d;
-        inverse[1][1] = (m[0][0])/(double)d;
-        inverse[0][1] = -(m[0][1])/(double)d;
-        inverse[1][0] = -(m[1][0])/(double)d;
+        inverse[0][0] = (m[1][1]) / (double) d;
+        inverse[1][1] = (m[0][0]) / (double) d;
+        inverse[0][1] = -(m[0][1]) / (double) d;
+        inverse[1][0] = -(m[1][0]) / (double) d;
         return inverse;
     }
 
-    public static double[][] inverseM1(int[][] m,int d) {
+    public static double[][] inverseM1(int[][] m, int d) {
         double[][] inverse = new double[1][1];
-        inverse[0][0] = 1/(double)m[0][0];
+        inverse[0][0] = 1 / (double) m[0][0];
         return inverse;
     }
-
 
 }
 
@@ -174,6 +182,7 @@ class Cmatrix extends gMatrix {
         return this.O;
     }
 
+    @Override
     public ArrayList<String> getMTypes() {
         return this.mTypes;
     }
@@ -480,6 +489,7 @@ class Nmatrix extends gMatrix {
         return this.O;
     }
 
+    @Override
     public ArrayList<String> getMTypes() {
         return this.mTypes;
     }
@@ -591,6 +601,7 @@ class Dmatrix extends gMatrix {
         return this.O;
     }
 
+    @Override
     public ArrayList<String> getMTypes() {
         return this.mTypes;
     }
@@ -710,6 +721,7 @@ class ONmatrix extends gMatrix {
         this.O = O;
     }
 
+    @Override
     public ArrayList<String> getMTypes() {
         return this.mTypes;
     }
@@ -816,96 +828,97 @@ public class AP_A3 {
                 }
 
                 break;
-            case 2:// Create matrices of requested matrix-types and label them with appropriate matrix-types.
+            case 2:// Create matrices of requested matrix-types and label them with appropriate
+                   // matrix-types.
                 typeOfMMenu();
                 int o = s.nextInt();
                 switch (o) {
                 case 1:// Rectangular Matrix
-                    int[][] m1 = {{1,2,3},{3,4,5}};
+                    int[][] m1 = { { 1, 2, 3 }, { 3, 4, 5 } };
                     Cmatrix n1 = new Cmatrix(m1);
                     Cmatrix.setType(n1);
                     matrices.add(new Nmatrix(m1, n1.getMTypes()));
                     break;
                 case 2:// Row Matrix
-                    int[][] m2 = {{1,2}};
+                    int[][] m2 = { { 1, 2 } };
                     Cmatrix n2 = new Cmatrix(m2);
                     Cmatrix.setType(n2);
                     matrices.add(new Nmatrix(m2, n2.getMTypes()));
                     break;
                 case 3:// Column Matrix
-                    int[][] m3 = {{1},{4}};
+                    int[][] m3 = { { 1 }, { 4 } };
                     Cmatrix n3 = new Cmatrix(m3);
                     Cmatrix.setType(n3);
                     matrices.add(new Nmatrix(m3, n3.getMTypes()));
                     break;
                 case 4:// Square Matrix
-                    int[][] m4 = {{1,2},{3,4}};
+                    int[][] m4 = { { 1, 2 }, { 3, 4 } };
                     Cmatrix n4 = new Cmatrix(m4);
                     Cmatrix.setType(n4);
                     matrices.add(new Nmatrix(m4, n4.getMTypes()));
                     break;
                 case 5:// Symmetric Matrix
-                    int[][] m5 = {{1,1,-1},{1,2,0},{-1,0,5}};
+                    int[][] m5 = { { 1, 1, -1 }, { 1, 2, 0 }, { -1, 0, 5 } };
                     Cmatrix n5 = new Cmatrix(m5);
                     Cmatrix.setType(n5);
                     matrices.add(new Nmatrix(m5, n5.getMTypes()));
                     break;
                 case 6:// Skew Symmetric Matrix
-                    int[][] m6 = {{0,1,-2},{-1,0,3},{2,-3,0}};
+                    int[][] m6 = { { 0, 1, -2 }, { -1, 0, 3 }, { 2, -3, 0 } };
                     Cmatrix n6 = new Cmatrix(m6);
                     Cmatrix.setType(n6);
                     matrices.add(new Nmatrix(m6, n6.getMTypes()));
                     break;
                 case 7:// Upper Triangular Matrix
-                    int[][] m7 = {{1,2,3},{0,3,4},{0,0,6}};
+                    int[][] m7 = { { 1, 2, 3 }, { 0, 3, 4 }, { 0, 0, 6 } };
                     Cmatrix n7 = new Cmatrix(m7);
                     Cmatrix.setType(n7);
                     matrices.add(new Nmatrix(m7, n7.getMTypes()));
                     break;
                 case 8:// Lower Triangular Matrix
-                    int[][] m8 = {{1,0,0},{3,4,0},{1,2,3}};
+                    int[][] m8 = { { 1, 0, 0 }, { 3, 4, 0 }, { 1, 2, 3 } };
                     Cmatrix n8 = new Cmatrix(m8);
                     Cmatrix.setType(n8);
                     matrices.add(new Nmatrix(m8, n8.getMTypes()));
                     break;
                 case 9:// Singular Matrix
-                    int[][] m9 = {{1,2,3},{4,5,6},{7,8,9}};
+                    int[][] m9 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
                     Cmatrix n9 = new Cmatrix(m9);
                     Cmatrix.setType(n9);
                     matrices.add(new Nmatrix(m9, n9.getMTypes()));
                     break;
                 case 10:// Diagonal Matrix
-                    int[][] m10 = {{1,0,0},{0,2,0},{0,0,3}};
+                    int[][] m10 = { { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 } };
                     Cmatrix n10 = new Cmatrix(m10);
                     Cmatrix.setType(n10);
                     matrices.add(new Dmatrix(m10, n10.getMTypes()));
                     break;
                 case 11:// Scalar Matrix
-                    int[][] m11 = {{2,0,0},{0,2,0},{0,0,2}};
+                    int[][] m11 = { { 2, 0, 0 }, { 0, 2, 0 }, { 0, 0, 2 } };
                     Cmatrix n11 = new Cmatrix(m11);
                     Cmatrix.setType(n11);
                     matrices.add(new Dmatrix(m11, n11.getMTypes()));
                     break;
                 case 12:// Identity Matrix
-                    int[][] m12 = {{1,0,0},{0,1,0},{0,0,1}};
+                    int[][] m12 = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
                     Cmatrix n12 = new Cmatrix(m12);
                     Cmatrix.setType(n12);
                     matrices.add(new Dmatrix(m12, n12.getMTypes()));
                     break;
                 case 13:// Singleton Matrix
-                    int[][] m13 = {{2}};
+                    int[][] m13 = { { 2 } };
                     Cmatrix n13 = new Cmatrix(m13);
                     Cmatrix.setType(n13);
                     matrices.add(new Nmatrix(m13, n13.getMTypes()));
                     break;
                 case 14:// Ones Matrix
-                    int[][] m14 = {{1,1},{1,1}};
+                    int[][] m14 = { { 1, 1 }, { 1, 1 } };
                     Cmatrix n14 = new Cmatrix(m14);
                     Cmatrix.setType(n14);
                     matrices.add(new ONmatrix(m14, n14.getMTypes()));
                     break;
                 case 15:// Null Matrix
-                    int[][] m15 = {{0,0},{0,0}};
+                    int[][] m15 = { { 0, 0 }, { 0, 0 } };
                     Cmatrix n15 = new Cmatrix(m15);
                     Cmatrix.setType(n15);
                     matrices.add(new ONmatrix(m15, n15.getMTypes()));
@@ -967,16 +980,15 @@ public class AP_A3 {
                     break;
                 case 4:// division AB-1
                     if (matrices.get(first).getArr()[0].length == matrices.get(second).getArr().length) {
-                        if(matrices.get(second).GetDeterminant() != 0){
-                            double[][] divd = gMatrix.mullM(matrices.get(first).getArr(),
-                                gMatrix.inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant()));
+                        if (matrices.get(second).GetDeterminant() != 0) {
+                            double[][] divd = gMatrix.mullM(matrices.get(first).getArr(), gMatrix
+                                    .inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant()));
                             System.out.println("Ans: ");
                             gMatrix.printArr(divd);
-                        }
-                        else{
+                        } else {
                             System.out.println("Matrix no invertible.");
                         }
-                        
+
                     } else {
                         System.out.println("Matrices not Compatible.");
                     }
@@ -997,18 +1009,17 @@ public class AP_A3 {
                 int inv = s.nextInt();
                 int[][] i = matrices.get(inv).getArr();
                 if (i.length == i[0].length) {
-                    if(matrices.get(inv).GetDeterminant() != 0){
+                    if (matrices.get(inv).GetDeterminant() != 0) {
                         double[][] invM = gMatrix.inverseM(i, matrices.get(inv).GetDeterminant());
                         System.out.println("Ans: ");
-                        if(invM.length == 3){
+                        if (invM.length == 3) {
                             invM = Cmatrix.getTraspose(invM);
                         }
                         gMatrix.printArr(invM);
-                    }
-                    else{
+                    } else {
                         System.out.println("Matrix not invertible as determinant is zero.");
                     }
-                    
+
                 } else {
                     System.out.println("Matrix not a square matrix.");
                 }
@@ -1032,6 +1043,55 @@ public class AP_A3 {
                 break;
             case 15:// Retrieve all the existing matrices (entered or created) having requested
                     // matrix-type labels.
+                typeOfMMenu();
+                int O = s.nextInt();
+                switch (O) {
+                case 1:// Rectangular Matrix
+                    gMatrix.getMofTypes(matrices, "Rectangular Matrix");
+                    break;
+                case 2:// Row Matrix
+                    gMatrix.getMofTypes(matrices, "Row Matrix");
+                    break;
+                case 3:// Column Matrix
+                    gMatrix.getMofTypes(matrices, "Column Matrix");
+                    break;
+                case 4:// Square Matrix
+                    gMatrix.getMofTypes(matrices, "Square Matrix");
+                    break;
+                case 5:// Symmetric Matrix
+                    gMatrix.getMofTypes(matrices, "Symmetrix Matrix");
+                    break;
+                case 6:// Skew Symmetric Matrix
+                    gMatrix.getMofTypes(matrices, "Skew-Symmetrix Matrix");
+                    break;
+                case 7:// Upper Triangular Matrix
+                    gMatrix.getMofTypes(matrices, "Upper Triangular Matrix");
+                    break;
+                case 8:// Lower Triangular Matrix
+                    gMatrix.getMofTypes(matrices, "Lower Triangular Matrix");
+                    break;
+                case 9:// Singular Matrix
+                    gMatrix.getMofTypes(matrices, "Singular Matrix");
+                    break;
+                case 10:// Diagonal Matrix
+                    gMatrix.getMofTypes(matrices, "Diagonal Matrix");
+                    break;
+                case 11:// Scalar Matrix
+                    gMatrix.getMofTypes(matrices, "Scalar Matrix");
+                    break;
+                case 12:// Identity Matrix
+                    gMatrix.getMofTypes(matrices, "Identity Matrix");
+                    break;
+                case 13:// Singleton Matrix
+                    gMatrix.getMofTypes(matrices, "Singleton Matrix");
+                    break;
+                case 14:// Ones Matrix
+                    gMatrix.getMofTypes(matrices, "Ones Matrix");
+                    break;
+                case 15:// Null Matrix
+                    gMatrix.getMofTypes(matrices, "Null Matrix");
+                    break;
+                }
                 break;
             case 16:
                 choice = 'n';
