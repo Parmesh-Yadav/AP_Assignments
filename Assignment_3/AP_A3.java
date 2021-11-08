@@ -83,6 +83,49 @@ abstract class gMatrix {
         System.out.println("Mean of all the elements in the matrix is: "+mean);
     }
     
+    public static int[][] sumScM(int m, int[][] n) {
+        int[][] temp = new int[n.length][n[0].length];
+        for (int i = 0; i < n.length; i++) {
+            for (int j = 0; j < n[0].length; j++) {
+                temp[i][j] = m + n[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public static int[][] diffScM(int m, int[][] n) {
+        int[][] temp = new int[n.length][n[0].length];
+        for (int i = 0; i < n.length; i++) {
+            for (int j = 0; j < n[0].length; j++) {
+                temp[i][j] = n[i][j] - m;
+            }
+        }
+
+        return temp;
+    }
+
+    public static int[][] mullScM(int m, int[][] n) {
+        int[][] temp = new int[n.length][n[0].length];
+        for (int i = 0; i < n.length; i++) {
+            for (int j = 0; j < n[0].length; j++) {
+                temp[i][j] = n[i][j] * m;
+            }
+        }
+
+        return temp;
+    }
+
+    public static double[][] divdScM(int m, int[][] n) {
+        double[][] temp = new double[n.length][n[0].length];
+        for (int i = 0; i < n.length; i++) {
+            for (int j = 0; j < n[0].length; j++) {
+                temp[i][j] = n[i][j] / (double)m;
+            }
+        }
+
+        return temp;
+    }
 
     public static int[][] sumM(int[][] m, int[][] n) {// assuming order of both arrays are same...
         int[][] temp = new int[m.length][m[0].length];
@@ -1089,6 +1132,32 @@ public class AP_A3 {
 
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
+                System.out.println("Choose a matrix to be used as scalar: ");
+                printSingletonMatrices(matrices);
+                int sc = s.nextInt();
+                System.out.println("Choose the other matrix on which the operation is to be performed: ");
+                printMatrices(matrices);
+                int om = s.nextInt();
+                addSubMulDivmenu();
+                int ch = s.nextInt();
+                switch (ch) {
+                    case 1://scalar addtion
+                        int[][] scSum = gMatrix.sumScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                        gMatrix.printArr(scSum);
+                        break;
+                    case 2://scalar subtraction
+                        int[][] scdiff = gMatrix.diffScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                        gMatrix.printArr(scdiff);
+                        break;
+                    case 3://scalar multiplication
+                        int[][] scmull = gMatrix.mullScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                        gMatrix.printArr(scmull);
+                        break;
+                    case 4://scalar division
+                        double[][] scdiv = gMatrix.divdScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                        gMatrix.printArr(scdiv);
+                        break;
+                }
                 break;
             case 12:// Compute A+AT for a matrix A.
                 System.out.println("Choose a matrix: ");
@@ -1170,6 +1239,15 @@ public class AP_A3 {
         for (int i = 0; i < matrices.size(); i++) {
             System.out.println(i + ": ");
             matrices.get(i).Printm();
+        }
+    }
+
+    public static void printSingletonMatrices(ArrayList<gMatrix> matrices) {
+        for (int i = 0; i < matrices.size(); i++) {
+            if(matrices.get(i).getMTypes().contains("Singleton Matrix")){
+                System.out.println(i + ": ");
+                matrices.get(i).Printm();
+            }
         }
     }
 
