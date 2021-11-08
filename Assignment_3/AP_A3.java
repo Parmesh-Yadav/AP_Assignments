@@ -48,41 +48,41 @@ abstract class gMatrix {
     public static void rowWiseMean(int[][] m) {
         double mean = 0;
         int d = m[0].length;
-        for(int i=0;i<m.length;i++){
+        for (int i = 0; i < m.length; i++) {
             mean = 0.0;
-            for(int j=0;j<m[0].length;j++){
+            for (int j = 0; j < m[0].length; j++) {
                 mean += m[i][j];
             }
-            mean = mean/d;
-            System.out.println("Mean of "+(i+1)+" row is: "+mean);
+            mean = mean / d;
+            System.out.println("Mean of " + (i + 1) + " row is: " + mean);
         }
     }
 
     public static void colWiseMean(int[][] m) {
         double mean = 0;
         int d = m.length;
-        for(int i=0;i<m.length;i++){
+        for (int i = 0; i < m.length; i++) {
             mean = 0.0;
-            for(int j=0;j<m[0].length;j++){
+            for (int j = 0; j < m[0].length; j++) {
                 mean += m[j][i];
             }
-            mean = mean/d;
-            System.out.println("Mean of "+(i+1)+" column is: "+mean);
+            mean = mean / d;
+            System.out.println("Mean of " + (i + 1) + " column is: " + mean);
         }
     }
 
     public static void allMean(int[][] m) {
         double mean = 0;
         int d = m.length * m[0].length;
-        for(int i=0;i<m.length;i++){
-            for(int j=0;j<m[0].length;j++){
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
                 mean += m[j][i];
             }
         }
-        mean = mean/d;
-        System.out.println("Mean of all the elements in the matrix is: "+mean);
+        mean = mean / d;
+        System.out.println("Mean of all the elements in the matrix is: " + mean);
     }
-    
+
     public static int[][] sumScM(int m, int[][] n) {
         int[][] temp = new int[n.length][n[0].length];
         for (int i = 0; i < n.length; i++) {
@@ -120,7 +120,7 @@ abstract class gMatrix {
         double[][] temp = new double[n.length][n[0].length];
         for (int i = 0; i < n.length; i++) {
             for (int j = 0; j < n[0].length; j++) {
-                temp[i][j] = n[i][j] / (double)m;
+                temp[i][j] = n[i][j] / (double) m;
             }
         }
 
@@ -143,6 +143,28 @@ abstract class gMatrix {
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
                 temp[i][j] = m[i][j] - n[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public static int[][] mullMe(int[][] m, int[][] n) {// assuming order of both arrays are same...
+        int[][] temp = new int[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                temp[i][j] = m[i][j] * n[i][j];
+            }
+        }
+
+        return temp;
+    }
+
+    public static double[][] divdMe(int[][] m, int[][] n) {// assuming order of both arrays are same...
+        double[][] temp = new double[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                temp[i][j] = m[i][j] / (double) n[i][j];
             }
         }
 
@@ -1078,6 +1100,30 @@ public class AP_A3 {
                 }
                 break;
             case 6:// Perform element-wise operations
+                System.out.println("1. Element wise Multiplication.");
+                System.out.println("2. Element wise Division.");
+                int key = s.nextInt();
+                printMatrices(matrices);
+                System.out.println("Choose first matrix: ");
+                int fir = s.nextInt();
+                System.out.println("Choose second matrix: ");
+                int sec = s.nextInt();
+                if ((matrices.get(fir).getArr().length == matrices.get(sec).getArr().length)
+                        && (matrices.get(fir).getArr()[0].length == matrices.get(sec).getArr()[0].length)) {
+                    switch (key) {
+                    case 1:
+                        int[][] mullMe = gMatrix.mullMe(matrices.get(fir).getArr(), matrices.get(sec).getArr());
+                        gMatrix.printArr(mullMe);
+                        break;
+                    case 2:
+                        double[][] divdMe = gMatrix.divdMe(matrices.get(fir).getArr(), matrices.get(sec).getArr());
+                        gMatrix.printArr(divdMe);
+                        break;
+                    }
+                }
+                else {
+                    System.out.println("Matrices not Compatible.");
+                }
                 break;
             case 7:// Transpose matrices
                 System.out.println("Choose a matrix: ");
@@ -1113,15 +1159,15 @@ public class AP_A3 {
                 typeOfMean();
                 int mean = s.nextInt();
                 switch (mean) {
-                    case 1://row wise mean
-                        gMatrix.rowWiseMean(matrices.get(me).getArr());
-                        break;
-                    case 2://column wise mean
-                        gMatrix.colWiseMean(matrices.get(me).getArr());
-                        break;
-                    case 3://mean of all the elements
-                        gMatrix.allMean(matrices.get(me).getArr());
-                        break;
+                case 1:// row wise mean
+                    gMatrix.rowWiseMean(matrices.get(me).getArr());
+                    break;
+                case 2:// column wise mean
+                    gMatrix.colWiseMean(matrices.get(me).getArr());
+                    break;
+                case 3:// mean of all the elements
+                    gMatrix.allMean(matrices.get(me).getArr());
+                    break;
                 }
                 break;
             case 10:// Compute determinants
@@ -1141,33 +1187,32 @@ public class AP_A3 {
                 addSubMulDivmenu();
                 int ch = s.nextInt();
                 switch (ch) {
-                    case 1://scalar addtion
-                        int[][] scSum = gMatrix.sumScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
-                        gMatrix.printArr(scSum);
-                        break;
-                    case 2://scalar subtraction
-                        int[][] scdiff = gMatrix.diffScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
-                        gMatrix.printArr(scdiff);
-                        break;
-                    case 3://scalar multiplication
-                        int[][] scmull = gMatrix.mullScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
-                        gMatrix.printArr(scmull);
-                        break;
-                    case 4://scalar division
-                        double[][] scdiv = gMatrix.divdScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
-                        gMatrix.printArr(scdiv);
-                        break;
+                case 1:// scalar addtion
+                    int[][] scSum = gMatrix.sumScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                    gMatrix.printArr(scSum);
+                    break;
+                case 2:// scalar subtraction
+                    int[][] scdiff = gMatrix.diffScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                    gMatrix.printArr(scdiff);
+                    break;
+                case 3:// scalar multiplication
+                    int[][] scmull = gMatrix.mullScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                    gMatrix.printArr(scmull);
+                    break;
+                case 4:// scalar division
+                    double[][] scdiv = gMatrix.divdScM(matrices.get(sc).getArr()[0][0], matrices.get(om).getArr());
+                    gMatrix.printArr(scdiv);
+                    break;
                 }
                 break;
             case 12:// Compute A+AT for a matrix A.
                 System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
                 int ID = s.nextInt();
-                if(matrices.get(ID).getMTypes().contains("Square Matrix")){
+                if (matrices.get(ID).getMTypes().contains("Square Matrix")) {
                     int[][] Sum = gMatrix.sumM(matrices.get(ID).getArr(), matrices.get(ID).GetTraspose());
                     gMatrix.printArr(Sum);
-                }
-                else{
+                } else {
                     System.out.println("Incompatible Matrix");
                 }
                 break;
@@ -1244,7 +1289,7 @@ public class AP_A3 {
 
     public static void printSingletonMatrices(ArrayList<gMatrix> matrices) {
         for (int i = 0; i < matrices.size(); i++) {
-            if(matrices.get(i).getMTypes().contains("Singleton Matrix")){
+            if (matrices.get(i).getMTypes().contains("Singleton Matrix")) {
                 System.out.println(i + ": ");
                 matrices.get(i).Printm();
             }
