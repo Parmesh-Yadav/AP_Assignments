@@ -45,6 +45,45 @@ abstract class gMatrix {
         }
     }
 
+    public static void rowWiseMean(int[][] m) {
+        double mean = 0;
+        int d = m[0].length;
+        for(int i=0;i<m.length;i++){
+            mean = 0.0;
+            for(int j=0;j<m[0].length;j++){
+                mean += m[i][j];
+            }
+            mean = mean/d;
+            System.out.println("Mean of "+(i+1)+" row is: "+mean);
+        }
+    }
+
+    public static void colWiseMean(int[][] m) {
+        double mean = 0;
+        int d = m.length;
+        for(int i=0;i<m.length;i++){
+            mean = 0.0;
+            for(int j=0;j<m[0].length;j++){
+                mean += m[j][i];
+            }
+            mean = mean/d;
+            System.out.println("Mean of "+(i+1)+" column is: "+mean);
+        }
+    }
+
+    public static void allMean(int[][] m) {
+        double mean = 0;
+        int d = m.length * m[0].length;
+        for(int i=0;i<m.length;i++){
+            for(int j=0;j<m[0].length;j++){
+                mean += m[j][i];
+            }
+        }
+        mean = mean/d;
+        System.out.println("Mean of all the elements in the matrix is: "+mean);
+    }
+    
+
     public static int[][] sumM(int[][] m, int[][] n) {// assuming order of both arrays are same...
         int[][] temp = new int[m.length][m[0].length];
         for (int i = 0; i < m.length; i++) {
@@ -1025,6 +1064,22 @@ public class AP_A3 {
                 }
                 break;
             case 9:// Compute means: row-wise mean, column-wise mean, mean of all the elements.
+                System.out.println("Choose a matrix: ");
+                printMatrices(matrices);
+                int me = s.nextInt();
+                typeOfMean();
+                int mean = s.nextInt();
+                switch (mean) {
+                    case 1://row wise mean
+                        gMatrix.rowWiseMean(matrices.get(me).getArr());
+                        break;
+                    case 2://column wise mean
+                        gMatrix.colWiseMean(matrices.get(me).getArr());
+                        break;
+                    case 3://mean of all the elements
+                        gMatrix.allMean(matrices.get(me).getArr());
+                        break;
+                }
                 break;
             case 10:// Compute determinants
                 System.out.println("Choose a matrix: ");
@@ -1163,5 +1218,12 @@ public class AP_A3 {
         System.out.println("13. Singleton Matrix");
         System.out.println("14. Ones Matrix");
         System.out.println("15. Null Matrix");
+    }
+
+    public static void typeOfMean() {
+        System.out.println("Choose an option>>");
+        System.out.println("1. Row Wise Mean");
+        System.out.println("2. Column Wise Mean");
+        System.out.println("3. Mean of all the elements");
     }
 }
