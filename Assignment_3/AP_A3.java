@@ -16,6 +16,8 @@ abstract class gMatrix {
 
     abstract int[][] getArr();
 
+    abstract int[][] getM();
+
     abstract ArrayList<String> getMTypes();
 
     public static void getMofTypes(ArrayList<gMatrix> matrices, String s) {
@@ -274,6 +276,7 @@ class Cmatrix extends gMatrix {
         return this.C;
     }
 
+    @Override
     public int[][] getM() {
         return this.M;
     }
@@ -581,6 +584,7 @@ class Nmatrix extends gMatrix {
         return this.C;
     }
 
+    @Override
     public int[][] getM() {
         return this.M;
     }
@@ -693,6 +697,7 @@ class Dmatrix extends gMatrix {
         return this.C;
     }
 
+    @Override
     public int[][] getM() {
         return this.M;
     }
@@ -792,6 +797,22 @@ class Dmatrix extends gMatrix {
         return temp;
     }
 
+    public static int[][] getArr(int[][] d, int r, int c) {
+        int[][] temp = new int[r][c];
+        int a = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (i == j) {
+                    temp[i][j] = d[0][a];
+                    a++;
+                } else {
+                    temp[i][j] = 0;
+                }
+            }
+        }
+        return temp;
+    }
+
 }
 
 class ONmatrix extends gMatrix {
@@ -809,6 +830,7 @@ class ONmatrix extends gMatrix {
         return this.C;
     }
 
+    @Override
     public int[][] getM() {
         return this.M;
     }
@@ -1031,6 +1053,47 @@ public class AP_A3 {
                 break;
             case 3:// Change the elements of a matrix as long as the fixed matrix-type labels
                    // remain valid
+                System.out.println("Choose a matrix to be changed");
+                printMatrices(matrices);
+                int change = s.nextInt();
+                if (matrices.get(change).getMTypes().contains("Null Matrix")
+                        || matrices.get(change).getMTypes().contains("Ones Matrix")) {
+                    System.out.println(
+                            "Cannot Change elements of ones or null matrix without changing their fixed matrix labels.");
+                } else if (matrices.get(change).getMTypes().contains("Diagonal Matrix")) {
+                    int[][] deleted = matrices.get(change).getM();
+                    for (int i = 0; i < deleted.length; i++) {
+                        for (int j = 0; j < deleted[0].length; j++) {
+                            deleted[i][j] = s.nextInt();
+                        }
+                    }
+                    int[][] deleteP = Dmatrix.getArr(deleted, matrices.get(change).getArr().length,
+                            matrices.get(change).getArr()[0].length);
+                    System.out.println(Arrays.deepToString(deleteP));
+                    Cmatrix dia = new Cmatrix(deleteP);
+                    Cmatrix.setType(dia);
+                    matrices.remove(change);
+                    matrices.add(new Dmatrix(deleteP, dia.getMTypes()));
+                } else {
+                    int[][] deleted = matrices.get(change).getArr();
+                    matrices.remove(change);
+                    for (int i = 0; i < deleted.length; i++) {
+                        for (int j = 0; j < deleted[0].length; j++) {
+                            deleted[i][j] = s.nextInt();
+                        }
+                    }
+                    Cmatrix dia = new Cmatrix(deleted);
+                    Cmatrix.setType(dia);
+                    if (dia.getMTypes().contains("Diagonal Matrix") && dia.getMTypes().contains("Null Matrix")) {
+                        matrices.add(new ONmatrix(deleted, dia.getMTypes()));
+                    } else if (dia.getMTypes().contains("Diagonal Matrix")) {
+                        matrices.add(new Dmatrix(deleted, dia.getMTypes()));
+                    } else if (dia.getMTypes().contains("Ones Matrix") || dia.getMTypes().contains("Null Matrix")) {
+                        matrices.add(new ONmatrix(deleted, dia.getMTypes()));
+                    } else {
+                        matrices.add(new Nmatrix(deleted, dia.getMTypes()));
+                    }
+                }
                 break;
             case 4:// Display all the matrix-type labels of a requested matrix.
                 System.out.println("Choose a matrix: ");
@@ -1120,8 +1183,7 @@ public class AP_A3 {
                         gMatrix.printArr(divdMe);
                         break;
                     }
-                }
-                else {
+                } else {
                     System.out.println("Matrices not Compatible.");
                 }
                 break;
