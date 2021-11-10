@@ -265,6 +265,22 @@ abstract class gMatrix {
         return inverse;
     }
 
+    public static double[] getEigenvalues(int[][] m) {
+        //2x2 matrix will have two eigenvalues
+        //first eigenvalue
+        double value_one = ((m[0][0] + m[1][1])
+                + Math.pow((Math.pow((m[0][0] + m[1][1]), 2) - 4 * (m[0][0] * m[1][1] - m[0][1] * m[1][0])), 0.5))
+                / (double) 2;
+
+        //second eigenvalue
+        double value_two = ((m[0][0] + m[1][1])
+                - Math.pow((Math.pow((m[0][0] + m[1][1]), 2) - 4 * (m[0][0] * m[1][1] - m[0][1] * m[1][0])), 0.5))
+                / (double) 2;
+
+        double[] eigenvalues = {value_one,value_two};
+        return eigenvalues;
+    }
+
 }
 
 class Cmatrix extends gMatrix {
@@ -1166,7 +1182,8 @@ public class AP_A3 {
                 case 4:// division AB-1
                     if (matrices.get(first).getArr()[0].length == matrices.get(second).getArr().length) {
                         if (matrices.get(second).GetDeterminant() != 0) {
-                            double[][] secondI = gMatrix.inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant());
+                            double[][] secondI = gMatrix.inverseM(matrices.get(second).getArr(),
+                                    matrices.get(second).GetDeterminant());
                             if (secondI.length == 3) {
                                 secondI = Cmatrix.getTraspose(secondI);
                             }
@@ -1257,10 +1274,9 @@ public class AP_A3 {
                 System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
                 int iD = s.nextInt();
-                if(matrices.get(iD).getMTypes().contains("Square Matrix")){
+                if (matrices.get(iD).getMTypes().contains("Square Matrix")) {
                     System.out.println("Ans: " + matrices.get(iD).GetDeterminant());
-                }
-                else{
+                } else {
                     System.out.println("Not a square matrix.");
                 }
                 break;
@@ -1309,17 +1325,16 @@ public class AP_A3 {
                 System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
                 int eigen = s.nextInt();
-                if(matrices.get(eigen).getMTypes().contains("Square Matrix")){
-                    if(matrices.get(eigen).getMTypes().contains("Singular Matrix")){
+                if (matrices.get(eigen).getArr().length == 2 & matrices.get(eigen).getArr()[0].length == 2) {
+                    if (matrices.get(eigen).getMTypes().contains("Singular Matrix")) {
                         System.out.println("This matrix is singular.");
                         System.out.println("Hence it has 0 as its eigenvalue");
+                    } else {
+                        double[] eigenF = gMatrix.getEigenvalues(matrices.get(eigen).getArr());
+                        System.out.println(Arrays.toString(eigenF));
                     }
-                    else{
-                        
-                    }
-                }
-                else{
-                    System.out.println("Not a square Matrix.");
+                } else {
+                    System.out.println("Not a square 2x2 Matrix.");
                 }
                 break;
             case 14:// Solve sets of linear equations using matrices.
