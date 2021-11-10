@@ -1306,6 +1306,21 @@ public class AP_A3 {
                 }
                 break;
             case 13:// Compute Eigen vectors and values.
+                System.out.println("Choose a matrix: ");
+                printMatrices(matrices);
+                int eigen = s.nextInt();
+                if(matrices.get(eigen).getMTypes().contains("Square Matrix")){
+                    if(matrices.get(eigen).getMTypes().contains("Singular Matrix")){
+                        System.out.println("This matrix is singular.");
+                        System.out.println("Hence it has 0 as its eigenvalue");
+                    }
+                    else{
+                        
+                    }
+                }
+                else{
+                    System.out.println("Not a square Matrix.");
+                }
                 break;
             case 14:// Solve sets of linear equations using matrices.
                 System.out.println("Choose matrix one: ");
