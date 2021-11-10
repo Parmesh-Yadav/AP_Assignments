@@ -175,7 +175,7 @@ abstract class gMatrix {
 
     public static int[][] mullM(int[][] m, int[][] n) {
         int[][] temp = new int[m.length][n[0].length];
-        for (int i = 9; i < temp.length; i++) {
+        for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[0].length; j++) {
                 temp[i][j] = 0;
             }
@@ -191,9 +191,9 @@ abstract class gMatrix {
         return temp;
     }
 
-    public static double[][] mullM(int[][] m, double[][] n) {
+    public static double[][] mullM(int[][] m, double[][] n) {// m * n(double)
         double[][] temp = new double[m.length][n[0].length];
-        for (int i = 9; i < temp.length; i++) {
+        for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[0].length; j++) {
                 temp[i][j] = 0;
             }
@@ -202,6 +202,24 @@ abstract class gMatrix {
             for (int j = 0; j < temp[0].length; j++) {
                 for (int k = 0; k < m[0].length; k++) {
                     temp[i][j] += (double) m[i][k] * n[k][j];
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    public static double[][] mullMdf(double[][] m, int[][] n) {// m(double) * n
+        double[][] temp = new double[m.length][n[0].length];
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[0].length; j++) {
+                temp[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[0].length; j++) {
+                for (int k = 0; k < m[0].length; k++) {
+                    temp[i][j] += m[i][k] * (double) n[k][j];
                 }
             }
         }
@@ -1281,6 +1299,33 @@ public class AP_A3 {
             case 13:// Compute Eigen vectors and values.
                 break;
             case 14:// Solve sets of linear equations using matrices.
+                System.out.println("Choose matrix one: ");
+                printMatrices(matrices);
+                int one = s.nextInt();
+                int[][] oneM = matrices.get(one).getArr();
+                if (oneM.length == oneM[0].length) {
+                    if (matrices.get(one).GetDeterminant() != 0) {
+                        System.out.println("Choose matrix two: ");
+                        printMatrices(matrices);
+                        int two = s.nextInt();
+                        int[][] twoM = matrices.get(two).getArr();
+                        if (oneM[0].length == twoM.length) {
+                            double[][] oneI = gMatrix.inverseM(oneM, matrices.get(one).GetDeterminant());
+                            if (oneI.length == 3) {
+                                oneI = Cmatrix.getTraspose(oneI);
+                            }
+                            double[][] eqSolv = gMatrix.mullMdf(oneI, twoM);
+                            gMatrix.printArr(eqSolv);
+                        } else {
+                            System.out.println("Matrices not compatibel to be solved.");
+                        }
+                    } else {
+                        System.out.println("Matrix not invertible as determinant is zero.");
+                    }
+                } else {
+                    System.out.println("Matrix not Square.");
+                }
+
                 break;
             case 15:// Retrieve all the existing matrices (entered or created) having requested
                     // matrix-type labels.
