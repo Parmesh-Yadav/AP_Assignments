@@ -1166,8 +1166,11 @@ public class AP_A3 {
                 case 4:// division AB-1
                     if (matrices.get(first).getArr()[0].length == matrices.get(second).getArr().length) {
                         if (matrices.get(second).GetDeterminant() != 0) {
-                            double[][] divd = gMatrix.mullM(matrices.get(first).getArr(), gMatrix
-                                    .inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant()));
+                            double[][] secondI = gMatrix.inverseM(matrices.get(second).getArr(), matrices.get(second).GetDeterminant());
+                            if (secondI.length == 3) {
+                                secondI = Cmatrix.getTraspose(secondI);
+                            }
+                            double[][] divd = gMatrix.mullM(matrices.get(first).getArr(), secondI);
                             System.out.println("Ans: ");
                             gMatrix.printArr(divd);
                         } else {
@@ -1254,8 +1257,12 @@ public class AP_A3 {
                 System.out.println("Choose a matrix: ");
                 printMatrices(matrices);
                 int iD = s.nextInt();
-                System.out.println("Ans: " + matrices.get(iD).GetDeterminant());
-
+                if(matrices.get(iD).getMTypes().contains("Square Matrix")){
+                    System.out.println("Ans: " + matrices.get(iD).GetDeterminant());
+                }
+                else{
+                    System.out.println("Not a square matrix.");
+                }
                 break;
             case 11:// Use singleton matrices as scalars, if requested.
                 System.out.println("Choose a matrix to be used as scalar: ");
@@ -1290,7 +1297,9 @@ public class AP_A3 {
                 printMatrices(matrices);
                 int ID = s.nextInt();
                 if (matrices.get(ID).getMTypes().contains("Square Matrix")) {
+                    System.out.println("Transpose of the matrix is: ");
                     int[][] Sum = gMatrix.sumM(matrices.get(ID).getArr(), matrices.get(ID).GetTraspose());
+                    System.out.println("A + A(transpose) : ");
                     gMatrix.printArr(Sum);
                 } else {
                     System.out.println("Incompatible Matrix");
