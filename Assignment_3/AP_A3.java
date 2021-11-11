@@ -281,6 +281,53 @@ abstract class gMatrix {
         return eigenvalues;
     }
 
+    public static void getEigevectors(int[][] m, double[] eValues){
+        double[][] double_m = new double[m.length][m[0].length];
+        for(int i = 0; i < m.length; i++){
+            for(int j = 0; j <m[0].length; j++){
+                double_m[i][j] = m[i][j];
+            }
+        }
+        if(eValues[0] !=  eValues[1]){
+            double[][] double__m = new double[m.length][m[0].length];
+            for(int i = 0; i < m.length; i++){
+                for(int j = 0; j <m[0].length; j++){
+                    double__m[i][j] = m[i][j];
+                }
+            }
+            double_m[0][0] = double_m[0][0] - eValues[1];
+            double_m[1][1] = double_m[1][1] - eValues[1];
+            double__m[0][0] = double__m[0][0] - eValues[0];
+            double__m[1][1] = double__m[1][1] - eValues[0];
+
+            System.out.println("Eigenvalues with their corresponding eigenvectors are:\n ");
+            System.out.println("First Eigenvalue is "+eValues[1]);
+            System.out.println("Corresponding eigenvectors are: ");
+            System.out.println("First Eigenvector");
+            System.out.println(double_m[0][0]+"\n"+double_m[1][0]);
+            System.out.println("Second EigenVecgtor");
+            System.out.println(double_m[0][1]+"\n"+double_m[1][1]+"\n");
+            System.out.println("Second Eigenvalue is "+eValues[0]);
+            System.out.println("Corresponding eigenvectors are: ");
+            System.out.println("First Eigenvector");
+            System.out.println(double__m[0][0]+"\n"+double__m[1][0]);
+            System.out.println("Second EigenVecgtor");
+            System.out.println(double__m[0][1]+"\n"+double__m[1][1]+"\n");
+
+        }
+        else{
+            double_m[0][0] = double_m[0][0] - eValues[1];
+            double_m[1][1] = double_m[1][1] - eValues[1];
+            System.out.println("Eigenvalues with their corresponding eigenvectors are:\n ");
+            System.out.println("Eigenvalue is "+eValues[1]);
+            System.out.println("Corresponding eigenvectors are: ");
+            System.out.println("First Eigenvector");
+            System.out.println(double_m[0][0]+"\n"+double_m[1][0]);
+            System.out.println("Second EigenVecgtor");
+            System.out.println(double_m[0][1]+"\n"+double_m[1][1]+"\n");
+        }
+    }
+
 }
 
 class Cmatrix extends gMatrix {
@@ -1331,7 +1378,7 @@ public class AP_A3 {
                         System.out.println("Hence it has 0 as its eigenvalue");
                     } else {
                         double[] eigenF = gMatrix.getEigenvalues(matrices.get(eigen).getArr());
-                        System.out.println(Arrays.toString(eigenF));
+                        gMatrix.getEigevectors(matrices.get(eigen).getArr(), eigenF);
                     }
                 } else {
                     System.out.println("Not a square 2x2 Matrix.");
