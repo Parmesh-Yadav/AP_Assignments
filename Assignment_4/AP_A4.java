@@ -1,6 +1,7 @@
 package Assignment_4;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 class Book {
@@ -14,7 +15,7 @@ class Book {
         this.barcode = barcode;
     }
 
-    public static void inputbook(ArrayList<Book> books){
+    public static void inputbook(ArrayList<Book> books) {
         Scanner s = new Scanner(System.in);
         System.out.println("Enter title of book: ");
         String title = s.nextLine();
@@ -30,7 +31,6 @@ class Book {
         return "Book Title = " + this.getTitle() + ", ISBN = " + this.getISBN() + ", Barcode = " + this.getBarcode();
     }
 
-
     public String getTitle() {
         return this.title;
     }
@@ -42,7 +42,47 @@ class Book {
     public int getBarcode() {
         return this.barcode;
     }
+}
 
+class BookTitleComparator implements Comparator<Book> {
+
+    @Override
+    public int compare(Book o1, Book o2) {
+        if (o1.getTitle().compareTo(o2.getTitle()) > 0) {
+            return 1;
+        } else if (o1.getTitle().compareTo(o2.getTitle()) < 0) {
+            return -1;
+        }
+        return 0;
+    }
+
+}
+
+class BookISBNComparator implements Comparator<Book> {
+
+    @Override
+    public int compare(Book o1, Book o2) {
+        if (o1.getISBN() > o2.getISBN()) {
+            return 1;
+        } else if (o1.getISBN() < o2.getISBN()) {
+            return -1;
+        }
+        return 0;
+    }
+
+}
+
+class BookBarcodeComparator implements Comparator<Book> {
+
+    @Override
+    public int compare(Book o1, Book o2) {
+        if (o1.getBarcode() > o2.getBarcode()) {
+            return 1;
+        } else if (o1.getBarcode() < o2.getBarcode()) {
+            return -1;
+        }
+        return 0;
+    }
 
 }
 
@@ -58,21 +98,18 @@ class Library {
     }
 
     public void getAllBooks() {
-        for(Book b: this.getBooks()){
+        for (Book b : this.getBooks()) {
             System.out.println(b.toString());
         }
     }
-
 
     public int getRacks() {
         return this.racks;
     }
 
-
     public int getTbooks() {
         return this.tbooks;
     }
-
 
     public ArrayList<Book> getBooks() {
         return this.books;
@@ -81,7 +118,6 @@ class Library {
     public void setBooks(ArrayList<Book> books) {
         this.books = books;
     }
-
 
 }
 
@@ -97,7 +133,7 @@ public class AP_A4 {
 
         Library l = new Library(racks, tbooks, books);
 
-        for(int i=0;i<tbooks;i++){
+        for (int i = 0; i < tbooks; i++) {
             Book.inputbook(books);
         }
         System.out.println("=================== Unsorted Books: ====================");
