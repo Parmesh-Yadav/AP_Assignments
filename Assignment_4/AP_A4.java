@@ -1,6 +1,5 @@
 package Assignment_4;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
@@ -26,6 +25,7 @@ class Book {
             int barcode = s.nextInt();s.nextLine();
             books[i] = new Book(title, ISBN, barcode);
         }
+        s.close();
         
     }
 
@@ -122,6 +122,38 @@ class Library {
         this.books = books;
     }
 
+    public void sortBooks(Book[] books) {//Bubble Sort
+        int size = books.length;
+        Book tempBook = new Book("Temp",1,1);
+        for(int i = 0; i < size; i++) {
+            for(int j = 1; j < (size - i); j++) {
+                BookTitleComparator btc = new BookTitleComparator();
+                if(btc.compare(books[j-1], books[j]) == 1){
+                    tempBook = books[j-1];
+                    books[j-1] = books[j];
+                    books[j] = tempBook;
+                }
+                else{
+                    BookISBNComparator bisbnc = new BookISBNComparator();
+                    if(bisbnc.compare(books[j-1], books[j]) == 1){
+                        tempBook = books[j-1];
+                        books[j-1] = books[j];
+                        books[j] = tempBook;
+                    }
+                    else{
+                        BookBarcodeComparator bbc = new BookBarcodeComparator();
+                        if(bbc.compare(books[j-1], books[j]) == 1){
+                            tempBook = books[j-1];
+                            books[j-1] = books[j];
+                            books[j] = tempBook;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+
 }
 
 public class AP_A4 {
@@ -139,6 +171,13 @@ public class AP_A4 {
 
         System.out.println("=================== Unsorted Books: ====================");
         System.out.println("--------------------------------------------------------");
+        System.out.println();
+        l.getAllBooks();
+        l.sortBooks(books);
+        System.out.println();
+        System.out.println("==================== Sorted Books: =====================");
+        System.out.println("--------------------------------------------------------");
+        System.out.println();
         l.getAllBooks();
         s.close();
     }
