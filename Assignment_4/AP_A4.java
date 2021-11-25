@@ -15,15 +15,18 @@ class Book {
         this.barcode = barcode;
     }
 
-    public static void inputbook(ArrayList<Book> books) {
+    public static void inputbook(Book[] books) {
         Scanner s = new Scanner(System.in);
-        System.out.println("Enter title of book: ");
-        String title = s.nextLine();
-        System.out.println("Enter ISBN code of book: ");
-        int ISBN = s.nextInt();
-        System.out.println("Enter barcode of book: ");
-        int barcode = s.nextInt();
-        books.add(new Book(title, ISBN, barcode));
+        for(int i=0;i<books.length;i++) {
+            System.out.println("Enter title of book: ");
+            String title = s.nextLine();
+            System.out.println("Enter ISBN code of book: ");
+            int ISBN = s.nextInt();
+            System.out.println("Enter barcode of book: ");
+            int barcode = s.nextInt();s.nextLine();
+            books[i] = new Book(title, ISBN, barcode);
+        }
+        
     }
 
     @Override
@@ -89,9 +92,9 @@ class BookBarcodeComparator implements Comparator<Book> {
 class Library {
     private final int racks;
     private final int tbooks;
-    ArrayList<Book> books = new ArrayList<Book>();
+    Book[] books ;
 
-    public Library(int racks, int tbooks, ArrayList<Book> books) {
+    public Library(int racks, int tbooks, Book[] books) {
         this.racks = racks;
         this.tbooks = tbooks;
         this.books = books;
@@ -111,11 +114,11 @@ class Library {
         return this.tbooks;
     }
 
-    public ArrayList<Book> getBooks() {
+    public Book[] getBooks() {
         return this.books;
     }
 
-    public void setBooks(ArrayList<Book> books) {
+    public void setBooks(Book[] books) {
         this.books = books;
     }
 
@@ -129,16 +132,14 @@ public class AP_A4 {
         int racks = s.nextInt();
         System.out.println("Enter total no. of books in the library: ");
         int tbooks = s.nextInt();
-        ArrayList<Book> books = new ArrayList<Book>();
+        Book[] books = new Book[tbooks];
 
         Library l = new Library(racks, tbooks, books);
+        Book.inputbook(books);
 
-        for (int i = 0; i < tbooks; i++) {
-            Book.inputbook(books);
-        }
         System.out.println("=================== Unsorted Books: ====================");
         System.out.println("--------------------------------------------------------");
         l.getAllBooks();
-
+        s.close();
     }
 }
