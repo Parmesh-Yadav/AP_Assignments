@@ -139,7 +139,7 @@ class Library {
 
 }
 
-public class AP_A4 {
+public class AP_A4_Q1 {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
