@@ -1,12 +1,15 @@
-package Assignment_4;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 class Book {
     private final String title;
     private final int ISBN;
     private final int barcode;
+    private int rack;
+    private int slot;
 
     public Book(String title, int ISBN, int barcode) {
         this.title = title;
@@ -14,19 +17,20 @@ class Book {
         this.barcode = barcode;
     }
 
-    public static void inputbook(Book[] books) {
+    public static void inputbook(ArrayList<Book> books, int n) {
         Scanner s = new Scanner(System.in);
-        for(int i=0;i<books.length;i++) {
+        for (int i = 0; i < n; i++) {
             System.out.println("Enter title of book: ");
             String title = s.nextLine();
             System.out.println("Enter ISBN code of book: ");
             int ISBN = s.nextInt();
             System.out.println("Enter barcode of book: ");
-            int barcode = s.nextInt();s.nextLine();
-            books[i] = new Book(title, ISBN, barcode);
+            int barcode = s.nextInt();
+            s.nextLine();
+            books.add(new Book(title, ISBN, barcode));
         }
         s.close();
-        
+
     }
 
     @Override
@@ -45,9 +49,26 @@ class Book {
     public int getBarcode() {
         return this.barcode;
     }
+
+    public int getRack() {
+        return this.rack;
+    }
+
+    public void setRack(int rack) {
+        this.rack = rack;
+    }
+
+    public int getSlot() {
+        return this.slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+
 }
 
-class BookTitleComparator implements Comparator<Book> {
+class BookComparator implements Comparator<Book> {
 
     @Override
     public int compare(Book o1, Book o2) {
@@ -55,53 +76,39 @@ class BookTitleComparator implements Comparator<Book> {
             return 1;
         } else if (o1.getTitle().compareTo(o2.getTitle()) < 0) {
             return -1;
+        } else {
+            if (o1.getISBN() > o2.getISBN()) {
+                return 1;
+            } else if (o1.getISBN() < o2.getISBN()) {
+                return -1;
+            } else {
+                if (o1.getBarcode() > o2.getBarcode()) {
+                    return 1;
+                } else if (o1.getBarcode() < o2.getBarcode()) {
+                    return -1;
+                }
+                return 0;
+            }
+
         }
-        return 0;
     }
-
-}
-
-class BookISBNComparator implements Comparator<Book> {
-
-    @Override
-    public int compare(Book o1, Book o2) {
-        if (o1.getISBN() > o2.getISBN()) {
-            return 1;
-        } else if (o1.getISBN() < o2.getISBN()) {
-            return -1;
-        }
-        return 0;
-    }
-
-}
-
-class BookBarcodeComparator implements Comparator<Book> {
-
-    @Override
-    public int compare(Book o1, Book o2) {
-        if (o1.getBarcode() > o2.getBarcode()) {
-            return 1;
-        } else if (o1.getBarcode() < o2.getBarcode()) {
-            return -1;
-        }
-        return 0;
-    }
-
 }
 
 class Library {
     private final int racks;
     private final int tbooks;
-    Book[] books ;
+    private final int slots;
+    ArrayList<Book> books = new ArrayList<>();;
 
-    public Library(int racks, int tbooks, Book[] books) {
+    public Library(int racks, int tbooks, ArrayList<Book> books2) {
         this.racks = racks;
         this.tbooks = tbooks;
-        this.books = books;
+        this.books = books2;
+        this.slots = (int) tbooks / racks;
     }
 
     public void getAllBooks() {
-        for (Book b : this.getBooks()) {
+        for (Object b : this.getBooks()) {
             System.out.println(b.toString());
         }
     }
@@ -114,44 +121,20 @@ class Library {
         return this.tbooks;
     }
 
-    public Book[] getBooks() {
+    public ArrayList<Book> getBooks() {
         return this.books;
     }
 
-    public void setBooks(Book[] books) {
+    public void setBooks(ArrayList<Book> books) {
         this.books = books;
     }
 
-    public void sortBooks(Book[] books) {//Bubble Sort
-        int size = books.length;
-        Book tempBook = new Book("Temp",1,1);
-        for(int i = 0; i < size; i++) {
-            for(int j = 1; j < (size - i); j++) {
-                BookTitleComparator btc = new BookTitleComparator();
-                if(btc.compare(books[j-1], books[j]) == 1){
-                    tempBook = books[j-1];
-                    books[j-1] = books[j];
-                    books[j] = tempBook;
-                }
-                else{
-                    BookISBNComparator bisbnc = new BookISBNComparator();
-                    if(bisbnc.compare(books[j-1], books[j]) == 1){
-                        tempBook = books[j-1];
-                        books[j-1] = books[j];
-                        books[j] = tempBook;
-                    }
-                    else{
-                        BookBarcodeComparator bbc = new BookBarcodeComparator();
-                        if(bbc.compare(books[j-1], books[j]) == 1){
-                            tempBook = books[j-1];
-                            books[j-1] = books[j];
-                            books[j] = tempBook;
-                        }
-                    }
-                }
-                
-            }
-        }
+    public int getSlots() {
+        return this.slots;
+    }
+
+    public static void compareBooks(List<Book> books) {
+        Collections.sort(books, new BookComparator());
     }
 
 }
@@ -164,16 +147,18 @@ public class AP_A4 {
         int racks = s.nextInt();
         System.out.println("Enter total no. of books in the library: ");
         int tbooks = s.nextInt();
-        Book[] books = new Book[tbooks];
+        ArrayList<Book> books = new ArrayList<>();
 
         Library l = new Library(racks, tbooks, books);
-        Book.inputbook(books);
+        Book.inputbook(books, tbooks);
 
         System.out.println("=================== Unsorted Books: ====================");
         System.out.println("--------------------------------------------------------");
         System.out.println();
         l.getAllBooks();
-        l.sortBooks(books);
+
+        Library.compareBooks(books);
+
         System.out.println();
         System.out.println("==================== Sorted Books: =====================");
         System.out.println("--------------------------------------------------------");
