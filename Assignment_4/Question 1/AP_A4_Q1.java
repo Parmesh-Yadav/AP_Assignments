@@ -15,6 +15,8 @@ class Book {
         this.title = title;
         this.ISBN = ISBN;
         this.barcode = barcode;
+        this.rack = 0;
+        this.slot = 0;
     }
 
     public static void inputbook(ArrayList<Book> books, int n) {
@@ -35,7 +37,7 @@ class Book {
 
     @Override
     public String toString() {
-        return "Book Title = " + this.getTitle() + ", ISBN = " + this.getISBN() + ", Barcode = " + this.getBarcode();
+        return "Book Title = " + this.getTitle() + " , ISBN = " + this.getISBN() + " , Barcode = " + this.getBarcode() + " , Rack = " + this.getRack() + " , Slot = " + this.getSlot();
     }
 
     public String getTitle() {
@@ -104,7 +106,7 @@ class Library {
         this.racks = racks;
         this.tbooks = tbooks;
         this.books = books2;
-        this.slots = (int) tbooks / racks;
+        this.slots = (int) (tbooks / racks);
     }
 
     public void getAllBooks() {
@@ -137,6 +139,21 @@ class Library {
         Collections.sort(books, new BookComparator());
     }
 
+    public void setsSlots(ArrayList<Book> books) {
+        int it = 0;//interator of books
+        int a = 0;//rack 
+        for(int i = 0; i<this.getRacks();i++) {
+            a++;
+            int b = 0;
+            for(int j = 0; j<this.getSlots(); j++){
+                b++;
+                books.get(it).setRack(a);
+                books.get(it).setSlot(b);
+                it++;
+            }
+        }
+    }
+
 }
 
 public class AP_A4_Q1 {
@@ -158,6 +175,7 @@ public class AP_A4_Q1 {
         l.getAllBooks();
 
         Library.compareBooks(books);
+        l.setsSlots(books);
 
         System.out.println();
         System.out.println("==================== Sorted Books: =====================");
