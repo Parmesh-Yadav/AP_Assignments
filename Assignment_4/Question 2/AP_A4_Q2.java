@@ -8,16 +8,67 @@ abstract class Image {
 
     abstract void printimage();
 
-    abstract void updateImage();
+    abstract void updateImage();;
 
-    public static void inputarr(int [][] arr){
+    public static void inputarr(int[][] arr) {
         Scanner s = new Scanner(System.in);
-        for (int i = 0; i < arr.length; i++){
-            for (int j = 0; j < arr[0].length; j++){
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[0].length; j++) {
                 arr[i][j] = s.nextInt();
             }
         }
     }
+
+    public static void copyarr(int[][] a,int[][] b) {
+        for(int i = 0; i < b.length; i++) {
+            for(int j = 0; j < b[0].length;j++){
+                a[i][j] = b[i][j];
+            }
+        }
+    }
+
+    public static <E> void computeNegative(E image) { // GENERIC FUNCTION
+        if (image instanceof ColorImage) {
+            ColorImage temp = (ColorImage) image;
+            ArrayList<int[][]> neg = new ArrayList<>();
+            int[][] nred = new int[temp.getR()][temp.getC()];
+            int[][] ngreen = new int[temp.getR()][temp.getC()];
+            int[][] nblue = new int[temp.getR()][temp.getC()];
+            copyarr(nred, temp.getRed());
+            copyarr(ngreen, temp.getGreen());
+            copyarr(nblue,temp.getBlue());
+            neg.add(nred);
+            neg.add(ngreen);
+            neg.add(nblue);
+            for (int[][] m : neg) {
+                for (int i = 0; i < temp.getR(); i++) {
+                    for (int j = 0; j < temp.getC(); j++) {
+                        m[i][j] = 255 - m[i][j];
+                    }
+                }
+            }
+            System.out.println("NEGATIVE red");
+            System.out.println(Arrays.deepToString(nred));
+            System.out.println("NEGATIVE green");
+            System.out.println(Arrays.deepToString(ngreen));
+            System.out.println("NEGATIVE blue");
+            System.out.println(Arrays.deepToString(nblue));
+
+        } else if (image instanceof GrayScaleImage) {
+            GrayScaleImage temp = (GrayScaleImage) image;
+            int[][] ngray = new int[temp.getR()][temp.getC()];
+            copyarr(ngray, temp.getGray());
+            for (int i = 0; i < temp.getR(); i++) {
+                for (int j = 0; j < temp.getC(); j++) {
+                    ngray[i][j] = 255 - ngray[i][j];
+                }
+            }
+            System.out.println("NEGATIVE gray");
+            System.out.println(Arrays.deepToString(ngray));
+        }
+    }
+
+    
 
 }
 
@@ -27,6 +78,7 @@ class ColorImage extends Image {
     private int[][] red;
     private int[][] green;
     private int[][] blue;
+    
 
     public ColorImage(int[][] red, int[][] green, int[][] blue, int r, int c) {
         this.red = red;
@@ -79,6 +131,7 @@ class ColorImage extends Image {
         this.c = c;
     }
 
+
     @Override
     public void getimages(int r, int c, ArrayList<Image> images) {
         Scanner s = new Scanner(System.in);
@@ -102,7 +155,7 @@ class ColorImage extends Image {
     }
 
     @Override
-    void printimage() {
+    public void printimage() {
         System.out.println("Here is the requested image:");
         System.out.println();
         System.out.println("Red:");
@@ -114,14 +167,13 @@ class ColorImage extends Image {
     }
 
     @Override
-    void updateImage() {
+    public void updateImage() {
         System.out.println("Update/Enter the new RED values: ");
         Image.inputarr(this.getRed());
         System.out.println("Update/Enter the new GREEN values: ");
         Image.inputarr(this.getGreen());
         System.out.println("Update/Enter the new BLUE values: ");
         Image.inputarr(this.getBlue());
-        
     }
 
 }
@@ -129,7 +181,7 @@ class ColorImage extends Image {
 class GrayScaleImage extends Image {
     private int r;
     private int c;
-    private int[][] gray;
+    private int[][] gray;;
 
     public GrayScaleImage(int[][] gray, int r, int c) {
         this.gray = gray;
@@ -164,8 +216,10 @@ class GrayScaleImage extends Image {
         this.c = c;
     }
 
+
+
     @Override
-    void getimages(int r, int c, ArrayList<Image> images) {
+    public void getimages(int r, int c, ArrayList<Image> images) {
         Scanner s = new Scanner(System.in);
         int[][] gray = new int[r][c];
         System.out.println(
@@ -180,17 +234,16 @@ class GrayScaleImage extends Image {
     }
 
     @Override
-    void printimage() {
+    public void printimage() {
         System.out.println("Here is the requested GrayScale image:");
         System.out.println();
         System.out.println(Arrays.deepToString(this.getGray()));
     }
 
     @Override
-    void updateImage() {
+    public void updateImage() {
         System.out.println("Update/Enter the new GRAY values: ");
         Image.inputarr(this.getGray());
-        
     }
 
 }
@@ -207,9 +260,10 @@ public class AP_A4_Q2 {
                 case 1:// input image
                     ImageMenu();
                     int im = s.nextInt();
-                    System.out.println("Enter the dimension of the matrix:\ni.e. enter 3 for 3x3, 4 for 4x4.");
+                    System.out.println("Enter the no. rows of the matrix:");
                     int r = s.nextInt();
-                    int c = r;
+                    System.out.println("Enter the no. columns of the matrix:");
+                    int c = s.nextInt();
                     switch (im) {
                         case 1:// color
                             (new ColorImage()).getimages(r, c, images);
@@ -242,12 +296,16 @@ public class AP_A4_Q2 {
                         System.out.println("No images present.");
                         break;
                     }
+                    System.out.println("Enter the image id: ( 0 - " + (images.size() - 1) + " ) :");
+                    int mg = s.nextInt();
+                    Image.computeNegative(images.get(mg));
                     break;
                 case 5:// exit
                     ch = 'n';
                     break;
             }
         }
+        s.close();
 
     }
 

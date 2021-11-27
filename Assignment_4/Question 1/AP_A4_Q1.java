@@ -144,7 +144,7 @@ class Library {
         int a = 0;//rack 
         for(int i = 0; i<this.getRacks();i++) {
             a++;
-            int b = 0;
+            int b = 0;//slot
             for(int j = 0; j<this.getSlots(); j++){
                 b++;
                 books.get(it).setRack(a);
